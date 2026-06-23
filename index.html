@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 바로보기의 공부방</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const _fbApp = firebase.initializeApp({
+  apiKey: 'AIzaSyDsbHlerUQNjEyHGCHiF5DZfL6WEDE4naU',
+  databaseURL: 'https://remote-claude-358d6-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'remote-claude-358d6',
+  appId: '1:340955069648:android:ccdbe988915f299af732d5'
+});
+const _db = firebase.database();
+const FB = {
+  roadmap:    'study_all/roadmap',
+  discovery:  'study_all/discovery',
+  journal:    'study_all/journal',
+  concepts:   'study_all/concepts',
+  quiz_req:   'study_all/quiz_requests',
+  quiz_res:   'study_all/quiz_results',
+  explain_req:'study_all/explain_requests',
+  explain_res:'study_all/explain_results',
+};
+const APP_VERSION = 'v1.0';
+</script>
+<style>
+:root {
+  --bg: #f8f7f4; --bg2: #ffffff; --bg3: #f0ede8;
+  --text: #2d2a26; --text2: #6b6560; --text3: #9e9894;
+  --border: #e2ddd8; --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --accent: #e8720c; --accent2: #fff3eb; --accent3: #ffd9b8;
+  --green: #16a34a; --green2: #dcfce7;
+  --blue: #2563eb; --blue2: #dbeafe;
+  --purple: #7c3aed; --purple2: #ede9fe;
+  --red: #dc2626; --red2: #fee2e2;
+  --yellow: #d97706; --yellow2: #fef3c7;
+  --radius: 10px; --radius-sm: 6px;
+}
+[data-theme=dark] {
+  --bg: #1a1917; --bg2: #242220; --bg3: #2e2b28;
+  --text: #f0ece8; --text2: #a8a29e; --text3: #6b6560;
+  --border: #3d3a36; --shadow: 0 1px 4px rgba(0,0,0,.4);
+  --accent2: #2d1a0a; --accent3: #5c2e00;
+  --green2: #052e16; --blue2: #1e3a5f; --purple2: #2e1065;
+  --red2: #450a0a; --yellow2: #451a03;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+
+/* HEADER */
+header { background:var(--bg2); border-bottom:1px solid var(--border); padding:0 16px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
+.header-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; gap:12px; height:52px; }
+.logo { font-size:18px; font-weight:700; color:var(--accent); white-space:nowrap; }
+.logo span { font-size:11px; font-weight:400; color:var(--text3); margin-left:6px; }
+.header-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.fb-status { font-size:11px; padding:2px 8px; border-radius:20px; background:var(--green2); color:var(--green); }
+.fb-status.offline { background:var(--red2); color:var(--red); }
+.theme-btn { background:none; border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px 8px; cursor:pointer; font-size:14px; color:var(--text2); }
+
+/* TABS */
+.tab-bar { background:var(--bg2); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+.tab-bar::-webkit-scrollbar { display:none; }
+.tab-inner { max-width:900px; margin:0 auto; display:flex; gap:0; padding:0 4px; }
+.tab-btn { flex:none; padding:10px 14px; border:none; background:none; cursor:pointer; font-size:13px; color:var(--text2); border-bottom:2px solid transparent; white-space:nowrap; transition:all .15s; }
+.tab-btn:hover { color:var(--accent); }
+.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+
+/* MAIN */
+main { max-width:900px; margin:0 auto; padding:20px 16px 60px; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* CARDS */
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; box-shadow:var(--shadow); }
+.card-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
+
+/* SECTION HEADER */
+.sec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.sec-title { font-size:16px; font-weight:700; color:var(--text); }
+.sec-sub { font-size:12px; color:var(--text3); margin-top:2px; }
+
+/* BUTTONS */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:var(--radius-sm); border:none; cursor:pointer; font-size:13px; font-weight:500; transition:opacity .15s; }
+.btn:hover { opacity:.85; }
+.btn-primary { background:var(--accent); color:#fff; }
+.btn-outline { background:none; border:1px solid var(--border); color:var(--text2); }
+.btn-sm { padding:4px 10px; font-size:12px; }
+.btn-ghost { background:none; border:none; cursor:pointer; color:var(--text3); font-size:13px; }
+.btn-ghost:hover { color:var(--accent); }
+
+/* BADGES */
+.badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; font-weight:500; }
+.badge-python { background:#dbeafe; color:#1d4ed8; }
+.badge-firebase { background:#fef3c7; color:#92400e; }
+.badge-flutter { background:#ede9fe; color:#5b21b6; }
+.badge-ai { background:#dcfce7; color:#166534; }
+.badge-web { background:#fce7f3; color:#9d174d; }
+.badge-git { background:#fee2e2; color:#991b1b; }
+.badge-api { background:#f0fdf4; color:#14532d; }
+.badge-devops { background:#f0f9ff; color:#075985; }
+.badge-기타 { background:var(--bg3); color:var(--text2); }
+
+/* PROGRESS BAR */
+.progress-wrap { background:var(--bg3); border-radius:20px; height:6px; overflow:hidden; margin:6px 0; }
+.progress-bar { height:100%; border-radius:20px; background:var(--accent); transition:width .4s ease; }
+
+/* INPUTS */
+input, textarea, select {
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm);
+  color:var(--text); font-size:13px; padding:8px 10px; width:100%; outline:none;
+  font-family:inherit; transition:border-color .15s;
+}
+input:focus, textarea:focus, select:focus { border-color:var(--accent); }
+textarea { resize:vertical; min-height:80px; }
+label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
+
+/* GRID */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+@media(max-width:600px) { .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+/* STAGE CARD (roadmap) */
+.stage-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
+.stage-header { padding:14px 16px; background:var(--bg3); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; cursor:pointer; }
+.stage-num { width:28px; height:28px; border-radius:50%; background:var(--accent); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.stage-num.done { background:var(--green); }
+.stage-num.future { background:var(--text3); }
+.stage-info { flex:1; }
+.stage-name { font-size:14px; font-weight:700; color:var(--text); }
+.stage-period { font-size:11px; color:var(--text3); margin-top:1px; }
+.stage-pct { font-size:13px; font-weight:600; color:var(--accent); margin-left:auto; }
+.stage-body { padding:12px 16px; }
+.topic-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.topic-row:last-child { border-bottom:none; }
+.topic-check { width:18px; height:18px; border-radius:4px; cursor:pointer; accent-color:var(--accent); flex-shrink:0; }
+.topic-info { flex:1; }
+.topic-name { font-size:13px; font-weight:500; color:var(--text); }
+.topic-desc { font-size:11px; color:var(--text3); margin-top:1px; }
+.topic-done .topic-name { text-decoration:line-through; color:var(--text3); }
+
+/* DISCOVERY (즉흥메모) */
+.disc-form { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
+.disc-tags { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0; }
+.disc-tag { padding:4px 10px; border-radius:20px; font-size:12px; border:1px solid var(--border); background:var(--bg); cursor:pointer; color:var(--text2); transition:all .15s; }
+.disc-tag.selected { border-color:var(--accent); background:var(--accent2); color:var(--accent); font-weight:600; }
+.disc-item { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px; position:relative; }
+.disc-item:hover .disc-del { opacity:1; }
+.disc-del { position:absolute; top:8px; right:10px; opacity:0; transition:opacity .15s; }
+.disc-date-group { font-size:11px; color:var(--text3); font-weight:600; margin:16px 0 8px; letter-spacing:.5px; text-transform:uppercase; }
+.disc-content { font-size:13px; color:var(--text); margin-bottom:6px; white-space:pre-wrap; }
+.disc-source { font-size:11px; color:var(--text3); }
+
+/* JOURNAL */
+.journal-form { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
+.journal-row { display:flex; gap:10px; margin-bottom:10px; align-items:flex-end; }
+.mood-btns { display:flex; gap:4px; }
+.mood-btn { padding:4px 10px; border-radius:20px; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:16px; transition:all .15s; }
+.mood-btn.selected { border-color:var(--accent); background:var(--accent2); }
+.journal-item { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px; }
+.journal-meta { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.journal-date { font-size:12px; font-weight:600; color:var(--text2); }
+.journal-duration { font-size:11px; background:var(--accent2); color:var(--accent); padding:2px 8px; border-radius:20px; }
+.journal-content { font-size:13px; color:var(--text); white-space:pre-wrap; }
+
+/* CONCEPTS */
+.concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+.concept-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; cursor:pointer; transition:box-shadow .15s; }
+.concept-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.concept-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:6px; }
+.concept-preview { font-size:12px; color:var(--text2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.concept-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+.filter-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.filter-chip { padding:4px 12px; border-radius:20px; font-size:12px; border:1px solid var(--border); background:var(--bg); cursor:pointer; color:var(--text2); transition:all .15s; }
+.filter-chip.active { border-color:var(--accent); background:var(--accent2); color:var(--accent); font-weight:600; }
+
+/* PROJECTS */
+.proj-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; display:flex; gap:14px; margin-bottom:12px; }
+.proj-icon { width:40px; height:40px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.proj-info { flex:1; }
+.proj-name { font-size:14px; font-weight:600; color:var(--text); }
+.proj-version { font-size:11px; color:var(--text3); margin-left:6px; }
+.proj-desc { font-size:12px; color:var(--text2); margin:4px 0 8px; }
+.proj-skills { display:flex; flex-wrap:wrap; gap:4px; }
+
+/* QUIZ */
+.quiz-setup { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; }
+.quiz-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+.quiz-q { font-size:15px; font-weight:600; color:var(--text); margin-bottom:16px; line-height:1.5; }
+.quiz-options { display:flex; flex-direction:column; gap:8px; }
+.quiz-opt { padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:13px; color:var(--text); text-align:left; transition:all .15s; }
+.quiz-opt:hover { border-color:var(--accent); background:var(--accent2); }
+.quiz-opt.correct { border-color:var(--green); background:var(--green2); color:var(--green); }
+.quiz-opt.wrong { border-color:var(--red); background:var(--red2); color:var(--red); }
+.quiz-opt.revealed { cursor:default; }
+.quiz-explain { margin-top:14px; padding:12px; background:var(--bg3); border-radius:var(--radius-sm); font-size:13px; color:var(--text2); border-left:3px solid var(--accent); }
+.quiz-nav { display:flex; align-items:center; justify-content:space-between; margin-top:16px; }
+.quiz-progress { font-size:12px; color:var(--text3); }
+.quiz-score { text-align:center; padding:20px; }
+.quiz-score .big { font-size:48px; font-weight:800; color:var(--accent); }
+.loading-spin { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; margin:20px auto; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* EXPLAIN */
+.explain-form { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; }
+.explain-result { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; }
+.explain-result h4 { font-size:14px; font-weight:700; color:var(--text); margin:14px 0 6px; }
+.explain-result h4:first-child { margin-top:0; }
+.explain-result p { font-size:13px; color:var(--text2); line-height:1.7; }
+.explain-result pre { background:var(--bg3); border-radius:var(--radius-sm); padding:10px; font-size:12px; overflow-x:auto; margin:8px 0; }
+.explain-result ul { padding-left:18px; font-size:13px; color:var(--text2); line-height:1.8; }
+
+/* STATS */
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
+.stat-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; text-align:center; }
+.stat-val { font-size:28px; font-weight:800; color:var(--accent); }
+.stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+.chart-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+.chart-title { font-size:13px; font-weight:600; color:var(--text2); margin-bottom:12px; }
+
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; display:none; align-items:center; justify-content:center; padding:16px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--bg2); border-radius:var(--radius); padding:20px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 8px 32px rgba(0,0,0,.2); }
+.modal-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:16px; }
+.modal-close { position:absolute; top:14px; right:14px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text3); }
+.form-row { margin-bottom:12px; }
+
+/* TOAST */
+.toast-wrap { position:fixed; bottom:20px; right:20px; z-index:300; display:flex; flex-direction:column; gap:8px; }
+.toast { padding:10px 16px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; color:#fff; box-shadow:0 4px 12px rgba(0,0,0,.2); animation:slideUp .3s ease; }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--red); }
+.toast.info { background:var(--accent); }
+@keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+
+/* EMPTY STATE */
+.empty { text-align:center; padding:40px 20px; color:var(--text3); font-size:13px; }
+.empty .icon { font-size:36px; margin-bottom:10px; }
+
+/* TAGS ROW */
+.tags-row { display:flex; flex-wrap:wrap; gap:4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">📚 바로보기의 공부방 <span id="version"></span></div>
+    <div class="header-right">
+      <span class="fb-status offline" id="fbStatus">● Firebase</span>
+      <button class="theme-btn" onclick="toggleTheme()" title="다크모드">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="switchTab('roadmap',this)">🗺️ 로드맵</button>
+    <button class="tab-btn" onclick="switchTab('discovery',this)">⚡ 오늘의 발견</button>
+    <button class="tab-btn" onclick="switchTab('journal',this)">📓 학습일지</button>
+    <button class="tab-btn" onclick="switchTab('concepts',this)">📚 개념노트</button>
+    <button class="tab-btn" onclick="switchTab('projects',this)">🏆 프로젝트</button>
+    <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
+    <button class="tab-btn" onclick="switchTab('explain',this)">🤖 AI 설명</button>
+    <button class="tab-btn" onclick="switchTab('stats',this)">📊 통계</button>
+  </div>
+</div>
+
+<main>
+
+<!-- ===== 🗺️ 로드맵 ===== -->
+<div class="tab-panel active" id="tab-roadmap">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">🗺️ 학습 로드맵</div>
+      <div class="sec-sub">AI 엔지니어 성장 3단계 커리큘럼 — 체크하면 Firebase에 저장돼요</div>
+    </div>
+    <div id="totalProgress" style="text-align:right;">
+      <div class="sec-title" id="totalPct">0%</div>
+      <div class="sec-sub">전체 달성률</div>
+    </div>
+  </div>
+  <div id="roadmapList"></div>
+</div>
+
+<!-- ===== ⚡ 오늘의 발견 ===== -->
+<div class="tab-panel" id="tab-discovery">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">⚡ 오늘의 발견</div>
+      <div class="sec-sub">작업 중 즉흥적으로 배운 것, 실수, 깨달음 — 빠르게 기록해요</div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="saveDiscovery()">+ 저장</button>
+  </div>
+  <div class="disc-form">
+    <div class="form-row">
+      <textarea id="discContent" placeholder="오늘 작업하다 배운 것을 적어보세요&#10;&#10;예) BOM이란 파일 맨 앞의 보이지 않는 3바이트. 메모장이 자동으로 붙임. JSON 파싱 오류 원인.&#10;예) git pull 없이 push하면 remote 변경사항을 덮어쓸 수 있다." rows="4"></textarea>
+    </div>
+    <div style="display:flex; gap:10px; align-items:flex-end;">
+      <div style="flex:1;">
+        <label>프로젝트/출처 (선택)</label>
+        <input id="discSource" placeholder="예) stock-dashboard, remote-claude, 만복과 대화 중..." />
+      </div>
+      <div>
+        <label>카테고리</label>
+        <select id="discCategory" style="width:120px;">
+          <option value="기타">기타</option>
+          <option value="Python">Python</option>
+          <option value="Firebase">Firebase</option>
+          <option value="Flutter">Flutter</option>
+          <option value="AI">AI</option>
+          <option value="Web">Web</option>
+          <option value="Git">Git</option>
+          <option value="API">API</option>
+          <option value="DevOps">DevOps</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="discoveryList"></div>
+</div>
+
+<!-- ===== 📓 학습일지 ===== -->
+<div class="tab-panel" id="tab-journal">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">📓 학습일지</div>
+      <div class="sec-sub">오늘 무엇을 배웠나요? 매일 한 줄이라도 기록해요</div>
+    </div>
+  </div>
+  <div class="journal-form">
+    <div class="form-row">
+      <label>오늘의 핵심 배움 (자유롭게)</label>
+      <textarea id="journalContent" placeholder="오늘 배운 것, 막혔던 것, 해결한 것을 자유롭게 적어보세요.&#10;&#10;예) Firebase와 로컬 git이 동시에 같은 파일을 수정하면 충돌한다. git pull 먼저가 원칙.&#10;CORS 프록시가 필요한 이유: 브라우저 보안 정책(SOP) 때문에 다른 도메인 API는 직접 호출 불가." rows="5"></textarea>
+    </div>
+    <div class="journal-row">
+      <div style="flex:1;">
+        <label>학습 시간 (분)</label>
+        <input id="journalDuration" type="number" placeholder="60" min="0" max="600" style="width:100px;" />
+      </div>
+      <div>
+        <label>오늘의 기분</label>
+        <div class="mood-btns">
+          <button class="mood-btn selected" data-mood="🔥" onclick="selectMood(this)">🔥</button>
+          <button class="mood-btn" data-mood="😊" onclick="selectMood(this)">😊</button>
+          <button class="mood-btn" data-mood="😐" onclick="selectMood(this)">😐</button>
+          <button class="mood-btn" data-mood="😵" onclick="selectMood(this)">😵</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveJournal()">저장</button>
+    </div>
+  </div>
+  <div id="journalList"></div>
+</div>
+
+<!-- ===== 📚 개념노트 ===== -->
+<div class="tab-panel" id="tab-concepts">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">📚 개념노트</div>
+      <div class="sec-sub">핵심 개념을 카드로 정리해요 — 나중에 퀴즈에도 활용돼요</div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="openConceptModal()">+ 새 개념</button>
+  </div>
+  <div class="filter-bar" id="conceptFilter"></div>
+  <div class="concept-grid" id="conceptGrid"></div>
+</div>
+
+<!-- ===== 🏆 프로젝트 ===== -->
+<div class="tab-panel" id="tab-projects">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">🏆 프로젝트 포트폴리오</div>
+      <div class="sec-sub">완료한 프로젝트 = 실제 배운 증거예요</div>
+    </div>
+  </div>
+  <div id="projectList"></div>
+</div>
+
+<!-- ===== 🎯 퀴즈 ===== -->
+<div class="tab-panel" id="tab-quiz">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">🎯 AI 퀴즈</div>
+      <div class="sec-sub">Claude AI가 개념을 기반으로 문제를 출제해요 (데몬 연결 필요)</div>
+    </div>
+  </div>
+  <div class="quiz-setup" id="quizSetup">
+    <div class="form-row">
+      <label>퀴즈 카테고리</label>
+      <select id="quizCategory">
+        <option value="Python">Python</option>
+        <option value="Firebase">Firebase</option>
+        <option value="Flutter">Flutter</option>
+        <option value="AI">AI / Claude API</option>
+        <option value="Web">HTML/CSS/JS</option>
+        <option value="Git">Git / GitHub</option>
+        <option value="API">REST API</option>
+        <option value="전체">전체 랜덤</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>문제 수</label>
+      <select id="quizCount">
+        <option value="3">3문제 (빠르게)</option>
+        <option value="5" selected>5문제 (기본)</option>
+        <option value="10">10문제 (심화)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>난이도</label>
+      <select id="quizDifficulty">
+        <option value="초급">초급 — 개념 이해 확인</option>
+        <option value="중급" selected>중급 — 응용 및 비교</option>
+        <option value="고급">고급 — 설계 및 트레이드오프</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="width:100%;justify-content:center;">🎯 퀴즈 시작 (Claude AI 생성)</button>
+    <div style="margin-top:10px;">
+      <button class="btn btn-outline" onclick="startLocalQuiz()" style="width:100%;justify-content:center;">📋 기본 퀴즈 (오프라인)</button>
+    </div>
+  </div>
+  <div id="quizArea" style="display:none;"></div>
+</div>
+
+<!-- ===== 🤖 AI 설명 ===== -->
+<div class="tab-panel" id="tab-explain">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">🤖 AI 설명 요청</div>
+      <div class="sec-sub">이해 안 되는 개념을 Claude에게 바로보기 눈높이로 설명 요청해요</div>
+    </div>
+  </div>
+  <div class="explain-form">
+    <div class="form-row">
+      <label>설명받고 싶은 개념이나 질문</label>
+      <textarea id="explainQuery" placeholder="예) CORS가 뭐야? 왜 CORS 프록시가 필요해?&#10;예) Firebase rules test mode가 뭔지, 실제 운영할 때 어떻게 바꿔야 해?&#10;예) async/await가 Promise랑 뭐가 달라?" rows="3"></textarea>
+    </div>
+    <div class="form-row">
+      <label>배경 컨텍스트 (선택)</label>
+      <input id="explainContext" placeholder="예) stock-dashboard에서 Google News RSS 가져오다가 막혔어" />
+    </div>
+    <button class="btn btn-primary" onclick="requestExplain()" style="width:100%;justify-content:center;">🤖 만복에게 설명 요청 (데몬 필요)</button>
+  </div>
+  <div id="explainResult" style="display:none;"></div>
+  <div id="explainHistory" style="margin-top:20px;"></div>
+</div>
+
+<!-- ===== 📊 통계 ===== -->
+<div class="tab-panel" id="tab-stats">
+  <div class="sec-header">
+    <div class="sec-title">📊 학습 통계</div>
+  </div>
+  <div class="stat-grid" id="statsGrid"></div>
+  <div class="chart-wrap">
+    <div class="chart-title">주간 학습 시간 (분)</div>
+    <canvas id="chartWeekly" height="100"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">카테고리별 발견 메모</div>
+    <canvas id="chartCategory" height="100"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">로드맵 단계별 달성률 (%)</div>
+    <canvas id="chartRoadmap" height="80"></canvas>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL: 개념노트 -->
+<div class="modal-overlay" id="conceptModal">
+  <div class="modal">
+    <div class="modal-title" id="conceptModalTitle">새 개념 추가</div>
+    <button class="modal-close" onclick="closeModal('conceptModal')">✕</button>
+    <div class="form-row">
+      <label>개념 이름 *</label>
+      <input id="cName" placeholder="예) CORS, BOM, Firebase Rules, async/await" />
+    </div>
+    <div class="form-row">
+      <label>카테고리</label>
+      <select id="cCategory">
+        <option value="기타">기타</option>
+        <option value="Python">Python</option>
+        <option value="Firebase">Firebase</option>
+        <option value="Flutter">Flutter</option>
+        <option value="AI">AI</option>
+        <option value="Web">Web</option>
+        <option value="Git">Git</option>
+        <option value="API">API</option>
+        <option value="DevOps">DevOps</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>내용 (마크다운 가능)</label>
+      <textarea id="cBody" rows="6" placeholder="개념 설명, 예제 코드, 언제 쓰는지 등을 자유롭게 적어요&#10;&#10;예) CORS = Cross-Origin Resource Sharing&#10;브라우저 보안 정책(SOP)으로 다른 도메인 API는 직접 호출 불가.&#10;해결: 서버에서 CORS 헤더 허용 or 프록시 서버 경유"></textarea>
+    </div>
+    <div class="form-row">
+      <label>관련 프로젝트 (콤마 구분)</label>
+      <input id="cProjects" placeholder="예) stock-dashboard, multimedia-summary" />
+    </div>
+    <input type="hidden" id="cEditId" />
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+      <button class="btn btn-outline" onclick="closeModal('conceptModal')">취소</button>
+      <button class="btn btn-primary" onclick="saveConcept()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: 개념노트 상세 -->
+<div class="modal-overlay" id="conceptDetailModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('conceptDetailModal')">✕</button>
+    <div id="conceptDetailContent"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn btn-outline btn-sm" onclick="editConceptFromDetail()">✏️ 수정</button>
+      <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:var(--red);" onclick="deleteConceptFromDetail()">🗑️ 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ─── CONSTANTS ──────────────────────────────────────────────────────────────
+
+const ROADMAP = [
+  {
+    stage: 1, title: 'Stage 1 — 기초 다지기', period: '현재 ~ 3개월',
+    topics: [
+      { id: 's1-git',      name: 'Git / GitHub 기초',        cat: 'Git',      desc: 'commit, push, pull, branch, merge conflict' },
+      { id: 's1-html',     name: 'HTML/CSS/JS 기초',          cat: 'Web',      desc: 'DOM, 이벤트, fetch API, 비동기 처리' },
+      { id: 's1-firebase', name: 'Firebase Realtime DB',      cat: 'Firebase', desc: '읽기/쓰기, 실시간 리스너, 경로 설계' },
+      { id: 's1-api',      name: 'REST API 연동',             cat: 'API',      desc: 'fetch, headers, JSON 파싱, 에러 핸들링' },
+      { id: 's1-claude',   name: 'Claude API 기초',           cat: 'AI',       desc: 'messages.create, 스트리밍, 토큰, Tool Use' },
+      { id: 's1-python',   name: 'Python 기초 문법',          cat: 'Python',   desc: '변수, 조건문, 반복문, 함수, 클래스, 모듈' },
+      { id: 's1-pyfile',   name: 'Python 파일/JSON/환경변수', cat: 'Python',   desc: 'open(), json, pathlib, os.environ, .env' },
+      { id: 's1-flutter',  name: 'Flutter/Dart 기초',         cat: 'Flutter',  desc: 'Widget, State, HTTP, Firebase SDK' },
+      { id: 's1-firebase2',name: 'Firebase 보안 규칙',        cat: 'Firebase', desc: 'Rules 문법, 인증 연동, test→prod 전환' },
+    ]
+  },
+  {
+    stage: 2, title: 'Stage 2 — AI 서비스 개발', period: '3개월 ~ 6개월',
+    topics: [
+      { id: 's2-fastapi',  name: 'FastAPI 백엔드',            cat: 'Python',   desc: 'Router, Pydantic, async/await, Depends' },
+      { id: 's2-tooluse',  name: 'Claude Tool Use 심화',      cat: 'AI',       desc: '도구 정의, 루프, 결과 파싱, 병렬 호출' },
+      { id: 's2-rag',      name: 'RAG 기초',                  cat: 'AI',       desc: '임베딩, 벡터DB, 청킹, 검색 증강 생성' },
+      { id: 's2-docker',   name: 'Docker 기초',               cat: 'DevOps',   desc: 'Dockerfile, 이미지, 컨테이너, Compose' },
+      { id: 's2-data',     name: '데이터 파이프라인',          cat: 'AI',       desc: '수집→정제→저장→활용 파이프라인 설계' },
+      { id: 's2-oauth',    name: 'OAuth2 / 인증',             cat: 'API',      desc: 'Google OAuth, JWT, 세션, 보안 원칙' },
+      { id: 's2-db',       name: '데이터 설계 원칙',          cat: 'Python',   desc: '참조 무결성, ID 불변 원칙, 정규화' },
+    ]
+  },
+  {
+    stage: 3, title: 'Stage 3 — 모델 심화', period: '6개월 이후',
+    topics: [
+      { id: 's3-finetune', name: '모델 파인튜닝',             cat: 'AI',       desc: '데이터셋 준비, LoRA, PEFT, 평가' },
+      { id: 's3-mlops',    name: 'MLOps 기초',                cat: 'DevOps',   desc: '모델 버저닝, 실험 추적, 서빙, 모니터링' },
+      { id: 's3-langchain',name: 'LangChain / LangGraph',     cat: 'AI',       desc: 'Agent 프레임워크, 상태 그래프, 메모리' },
+      { id: 's3-vectordb', name: '벡터 DB 심화',              cat: 'AI',       desc: 'Pinecone, Chroma, FAISS, 유사도 검색' },
+    ]
+  }
+];
+
+const PROJECTS = [
+  {
+    name: '주식 포트폴리오 대시보드', version: 'v1.2', icon: '📈', color: '#dbeafe',
+    desc: '카카오톡 → 자동 파싱 → GitHub Pages 시각화. Firebase 동기화, Study 탭, 환율 폴백.',
+    skills: ['Python', 'Firebase', 'Web', 'API', 'Git'],
+    date: '2026-06-19', url: 'https://barobogi.github.io/stock_dashboard/stock-dashboard.html'
+  },
+  {
+    name: '멀티미디어 요약 앱', version: 'v1.0', icon: '🎬', color: '#dcfce7',
+    desc: 'YouTube URL → Gemini 영상 이해 → Claude 구조화 요약 → Daum메일/GitHub 자동 배포.',
+    skills: ['Python', 'Flutter', 'AI', 'API', 'DevOps'],
+    date: '2026-06-20', url: 'https://barobogi.github.io/Daily_for_Barobogi/information.html'
+  },
+  {
+    name: '모바일 만복이 채팅 앱', version: 'v1.4', icon: '📱', color: '#ede9fe',
+    desc: '폰 Flutter 앱 → Firebase relay → 데스크탑 데몬 → Claude API. Tool Use로 파일 실행.',
+    skills: ['Flutter', 'Firebase', 'Python', 'AI', 'API'],
+    date: '2026-06-22', url: ''
+  },
+  {
+    name: '바로보기의 공부방 (이 앱)', version: 'v1.0', icon: '📚', color: '#fef3c7',
+    desc: '로드맵, 즉흥 메모, 학습일지, 개념노트, AI 퀴즈, AI 설명, 통계를 한 곳에.',
+    skills: ['Web', 'Firebase', 'AI', 'Git'],
+    date: '2026-06-23', url: ''
+  },
+];
+
+const LOCAL_QUIZ_BANK = {
+  Git: [
+    { q: 'git pull 없이 push를 했을 때 발생할 수 있는 문제는?', opts: ['로컬 파일이 삭제된다', 'remote의 변경사항을 덮어쓸 수 있다', 'push가 자동으로 실패한다', 'branch가 삭제된다'], ans: 1, exp: 'git pull 없이 push하면 remote에 남이 추가한 커밋(GitHub API 커밋 등)을 로컬 버전으로 덮어씁니다. 항상 pull → 작업 → push 순서를 지켜야 해요.' },
+    { q: 'BOM(Byte Order Mark)이 JSON 파싱에 문제를 일으키는 이유는?', opts: ['JSON 파일 크기를 늘린다', '파일 맨 앞에 보이지 않는 바이트가 삽입되어 파서가 오류를 낸다', 'Git이 파일을 인식 못한다', '인코딩이 UTF-16으로 바뀐다'], ans: 1, exp: 'BOM은 EF BB BF (3바이트)로 파일 앞에 삽입됩니다. 브라우저/파이썬 JSON 파서는 이를 유효한 JSON 시작으로 인식하지 못해 오류를 냅니다. UTF-8 without BOM으로 저장해야 해요.' },
+    { q: '두 시스템이 같은 파일을 독립적으로 수정할 때 안전한 전략은?', opts: ['둘 다 동시에 수정해도 괜찮다', '한 곳에서만 수정하거나(단일 소스), Firebase처럼 충돌 없는 중앙 저장소를 사용한다', 'git lock 파일을 만든다', '파일을 복사해서 각자 사용한다'], ans: 1, exp: '오늘 multimedia.json 사례처럼, Render 백엔드(GitHub API)와 로컬 master_watch.py가 동시에 같은 파일을 수정하면 충돌이 발생합니다. 단일 소스 원칙이 핵심이에요.' },
+  ],
+  Firebase: [
+    { q: 'Firebase Realtime DB에서 배열을 저장하면 어떻게 변환되나요?', opts: ['그대로 배열로 저장된다', '{"0":..., "1":...} 형태의 딕셔너리로 저장된다', '저장 불가 오류가 난다', 'JSON 문자열로 변환된다'], ans: 1, exp: 'Firebase는 배열을 {"0": item0, "1": item1} 형태의 객체(dict)로 저장합니다. 파이썬에서 읽을 때 firebase_to_list() 같은 변환 함수가 필요해요.' },
+    { q: 'Firebase test mode 보안 규칙의 문제점은?', opts: ['데이터가 암호화되지 않는다', '일정 기간 후 만료되며, 누구나 읽기/쓰기가 가능하다', '속도가 느리다', 'Flutter와 호환이 안 된다'], ans: 1, exp: 'test mode는 모든 읽기/쓰기를 허용합니다. 만료 후에는 쓰기 실패가 발생해요. 실제 운영 시 uid 기반 인증 규칙으로 변경해야 합니다.' },
+    { q: 'Firebase 경로 stock_dashboard/manual_stocks 에서 "manual_stocks"의 역할은?', opts: ['파일명', '데이터베이스 컬렉션 이름', '경로의 한 노드 (키)', '테이블 이름'], ans: 2, exp: 'Firebase Realtime DB는 계층적 JSON 트리 구조입니다. stock_dashboard는 네임스페이스, manual_stocks는 그 아래 하위 노드(키)입니다.' },
+  ],
+  AI: [
+    { q: 'Claude Tool Use에서 stop_reason이 "tool_use"일 때 다음 단계는?', opts: ['응답을 그대로 반환한다', '도구를 실행하고 결과를 messages에 추가한 뒤 API를 다시 호출한다', '오류로 처리한다', '다른 모델로 전환한다'], ans: 1, exp: 'Tool Use 루프: API 호출 → stop_reason=="tool_use" → 도구 실행 → tool_result를 messages에 추가 → 다시 API 호출. stop_reason=="end_turn"이 될 때까지 반복해요.' },
+    { q: 'RAG(Retrieval Augmented Generation)의 핵심 아이디어는?', opts: ['더 큰 모델을 사용한다', '외부 문서를 검색해서 컨텍스트로 제공하여 답변 품질을 높인다', '파인튜닝으로 지식을 주입한다', '프롬프트를 더 길게 만든다'], ans: 1, exp: 'RAG = 검색(Retrieval) + 생성(Generation). LLM이 모르는 최신 정보나 사내 문서를 벡터 검색으로 찾아 컨텍스트로 넣어줍니다. 파인튜닝보다 비용이 낮고 업데이트가 쉬워요.' },
+    { q: '토큰(Token)이란 무엇인가요?', opts: ['AI의 인증 키', 'LLM이 텍스트를 처리하는 최소 단위 (대략 단어의 3/4)', 'API 요청 횟수', '데이터베이스 레코드'], ans: 1, exp: '토큰은 LLM이 텍스트를 쪼개는 단위입니다. 영어는 평균 1단어≈1.3토큰, 한국어는 1글자≈1~2토큰. 긴 시스템 프롬프트가 토큰을 많이 소비해 429 에러의 원인이 될 수 있어요.' },
+  ],
+  Python: [
+    { q: 'Python에서 `if __name__ == "__main__":`의 의미는?', opts: ['항상 실행되는 코드 블록', '이 파일이 직접 실행될 때만 실행 (import 시 실행 안 됨)', '클래스 생성자', '에러 처리 구문'], ans: 1, exp: '파이썬 파일을 import하면 __name__은 모듈 이름이 됩니다. 직접 실행할 때만 __name__=="__main__"이 True입니다. 재사용 가능한 모듈을 만들 때 필수 패턴이에요.' },
+    { q: 'async/await 패턴이 필요한 이유는?', opts: ['코드를 더 짧게 만들기 위해', 'I/O 작업(네트워크, 파일) 대기 중 다른 작업을 처리하기 위해', '오류를 자동으로 처리하기 위해', '메모리를 절약하기 위해'], ans: 1, exp: '네트워크 요청을 기다리는 동안(수백ms) CPU는 놀고 있습니다. async/await로 대기 중에 다른 요청을 처리할 수 있어요. FastAPI가 높은 동시성을 지원하는 이유입니다.' },
+  ],
+  Web: [
+    { q: 'CORS(Cross-Origin Resource Sharing)가 필요한 이유는?', opts: ['서버 보안을 강화하기 위해', '브라우저 SOP(동일 출처 정책)로 인해 다른 도메인 API를 브라우저에서 직접 호출할 수 없어서', '데이터 암호화를 위해', '속도를 높이기 위해'], ans: 1, exp: '브라우저는 보안 정책(SOP)으로 다른 도메인 요청을 차단합니다. 서버가 CORS 헤더(Access-Control-Allow-Origin)를 응답에 포함하거나, 프록시 서버를 경유해야 해요.' },
+    { q: 'localStorage와 Firebase의 차이는?', opts: ['localStorage가 더 빠르다', 'localStorage는 단일 기기에만 저장, Firebase는 실시간 서버 동기화로 다기기 공유 가능', 'Firebase가 무료다', '차이 없다'], ans: 1, exp: 'localStorage는 브라우저 로컬 저장소 — 이 기기에서만 접근 가능. Firebase는 클라우드 DB — 폰/PC/다른 브라우저 모두 실시간 동기화 가능. stock-dashboard에서 둘 다 쓰는 이유예요.' },
+  ],
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let roadmapProgress = {}; // {topicId: {completed, completedAt}}
+let discoveries = {};     // Firebase snapshot
+let journals = {};
+let concepts = {};
+let quizData = null;
+let currentQuizQ = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let selectedMood = '🔥';
+let conceptFilter = '전체';
+let currentConceptId = null;
+let pendingExplainId = null;
+
+// ─── FIREBASE CONNECT ────────────────────────────────────────────────────────
+function initFirebase() {
+  _db.ref('.info/connected').on('value', snap => {
+    const el = document.getElementById('fbStatus');
+    if (snap.val()) { el.textContent = '● Firebase'; el.className = 'fb-status'; }
+    else { el.textContent = '● 오프라인'; el.className = 'fb-status offline'; }
+  });
+  _db.ref(FB.roadmap).on('value', snap => {
+    roadmapProgress = snap.val() || {};
+    renderRoadmap();
+    renderStats();
+  });
+  _db.ref(FB.discovery).on('value', snap => {
+    discoveries = snap.val() || {};
+    renderDiscoveries();
+    renderStats();
+  });
+  _db.ref(FB.journal).on('value', snap => {
+    journals = snap.val() || {};
+    renderJournals();
+    renderStats();
+  });
+  _db.ref(FB.concepts).on('value', snap => {
+    concepts = snap.val() || {};
+    renderConceptFilter();
+    renderConcepts();
+  });
+}
+
+// ─── TAB ────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'stats') renderStats();
+}
+
+// ─── THEME ──────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  html.dataset.theme = next;
+  document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('study_theme', next);
+}
+
+// ─── TOAST ──────────────────────────────────────────────────────────────────
+function showToast(msg, type = 'info') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ─── MODAL ──────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+window.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+
+// ─── ROADMAP ────────────────────────────────────────────────────────────────
+function renderRoadmap() {
+  const el = document.getElementById('roadmapList');
+  let totalDone = 0, totalAll = 0;
+  el.innerHTML = ROADMAP.map(stage => {
+    const topicsDone = stage.topics.filter(t => roadmapProgress[t.id]?.completed).length;
+    const pct = Math.round(topicsDone / stage.topics.length * 100);
+    totalDone += topicsDone; totalAll += stage.topics.length;
+    const numClass = pct === 100 ? 'done' : stage.stage === 3 ? 'future' : '';
+    return `
+    <div class="stage-card">
+      <div class="stage-header">
+        <div class="stage-num ${numClass}">${stage.stage}</div>
+        <div class="stage-info">
+          <div class="stage-name">${stage.title}</div>
+          <div class="stage-period">📅 ${stage.period}</div>
+          <div class="progress-wrap" style="width:180px; margin-top:6px;">
+            <div class="progress-bar" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="stage-pct">${topicsDone}/${stage.topics.length}</div>
+      </div>
+      <div class="stage-body">
+        ${stage.topics.map(t => {
+          const done = roadmapProgress[t.id]?.completed;
+          return `
+          <div class="topic-row ${done ? 'topic-done' : ''}">
+            <input type="checkbox" class="topic-check" ${done ? 'checked' : ''} onchange="toggleTopic('${t.id}', this.checked)" />
+            <div class="topic-info">
+              <div class="topic-name">${t.name}</div>
+              <div class="topic-desc">${t.desc}</div>
+            </div>
+            <span class="badge badge-${t.cat.toLowerCase()}">${t.cat}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  const total = Math.round(totalDone / totalAll * 100);
+  document.getElementById('totalPct').textContent = total + '%';
+}
+
+function toggleTopic(id, checked) {
+  _db.ref(FB.roadmap + '/' + id).set(checked ? { completed: true, completedAt: today() } : null)
+    .then(() => showToast(checked ? '✅ 완료 처리!' : '↩️ 취소됨', checked ? 'success' : 'info'))
+    .catch(() => showToast('저장 실패', 'error'));
+}
+
+// ─── DISCOVERY ──────────────────────────────────────────────────────────────
+function saveDiscovery() {
+  const content = document.getElementById('discContent').value.trim();
+  if (!content) { showToast('내용을 입력해주세요', 'error'); return; }
+  const cat = document.getElementById('discCategory').value;
+  const src = document.getElementById('discSource').value.trim();
+  const key = _db.ref(FB.discovery + '/' + today()).push().key;
+  _db.ref(FB.discovery + '/' + today() + '/' + key).set({
+    content, category: cat, source: src, created: Date.now()
+  }).then(() => {
+    document.getElementById('discContent').value = '';
+    document.getElementById('discSource').value = '';
+    showToast('⚡ 발견 메모 저장!', 'success');
+  }).catch(() => showToast('저장 실패 — Firebase 확인', 'error'));
+}
+
+function renderDiscoveries() {
+  const el = document.getElementById('discoveryList');
+  const dates = Object.keys(discoveries).sort((a,b) => b.localeCompare(a));
+  if (!dates.length) { el.innerHTML = '<div class="empty"><div class="icon">⚡</div>아직 발견 메모가 없어요.<br>오늘 작업하다 배운 것을 기록해보세요!</div>'; return; }
+  el.innerHTML = dates.map(date => {
+    const items = Object.entries(discoveries[date]).sort((a,b) => b[1].created - a[1].created);
+    return `
+    <div class="disc-date-group">${formatDate(date)}</div>
+    ${items.map(([id, d]) => `
+      <div class="disc-item">
+        <div class="disc-content">${escHtml(d.content)}</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+          <span class="badge badge-${(d.category||'기타').toLowerCase()}">${d.category||'기타'}</span>
+          ${d.source ? `<span class="disc-source">📂 ${escHtml(d.source)}</span>` : ''}
+        </div>
+        <button class="btn-ghost disc-del btn-sm" onclick="deleteDiscovery('${date}','${id}')">🗑️</button>
+      </div>`).join('')}`;
+  }).join('');
+}
+
+function deleteDiscovery(date, id) {
+  if (!confirm('삭제할까요?')) return;
+  _db.ref(FB.discovery + '/' + date + '/' + id).remove()
+    .then(() => showToast('삭제됨', 'info'))
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+// ─── JOURNAL ────────────────────────────────────────────────────────────────
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = btn.dataset.mood;
+}
+
+function saveJournal() {
+  const content = document.getElementById('journalContent').value.trim();
+  if (!content) { showToast('내용을 입력해주세요', 'error'); return; }
+  const duration = parseInt(document.getElementById('journalDuration').value) || 0;
+  _db.ref(FB.journal + '/' + today()).set({ content, duration, mood: selectedMood, saved: Date.now() })
+    .then(() => {
+      document.getElementById('journalContent').value = '';
+      document.getElementById('journalDuration').value = '';
+      showToast('📓 학습일지 저장!', 'success');
+    }).catch(() => showToast('저장 실패', 'error'));
+}
+
+function renderJournals() {
+  const el = document.getElementById('journalList');
+  const entries = Object.entries(journals).sort((a,b) => b[0].localeCompare(a[0]));
+  if (!entries.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
+  el.innerHTML = entries.map(([date, d]) => `
+    <div class="journal-item">
+      <div class="journal-meta">
+        <span class="journal-date">${formatDate(date)}</span>
+        ${d.duration ? `<span class="journal-duration">⏱️ ${d.duration}분</span>` : ''}
+        ${d.mood ? `<span style="font-size:18px;">${d.mood}</span>` : ''}
+      </div>
+      <div class="journal-content">${escHtml(d.content)}</div>
+    </div>`).join('');
+}
+
+// ─── CONCEPTS ───────────────────────────────────────────────────────────────
+function openConceptModal(id) {
+  document.getElementById('cEditId').value = id || '';
+  document.getElementById('conceptModalTitle').textContent = id ? '개념 수정' : '새 개념 추가';
+  if (id && concepts[id]) {
+    const c = concepts[id];
+    document.getElementById('cName').value = c.name || '';
+    document.getElementById('cCategory').value = c.category || '기타';
+    document.getElementById('cBody').value = c.body || '';
+    document.getElementById('cProjects').value = (c.projects||[]).join(', ');
+  } else {
+    document.getElementById('cName').value = '';
+    document.getElementById('cCategory').value = '기타';
+    document.getElementById('cBody').value = '';
+    document.getElementById('cProjects').value = '';
+  }
+  openModal('conceptModal');
+}
+
+function saveConcept() {
+  const name = document.getElementById('cName').value.trim();
+  const body = document.getElementById('cBody').value.trim();
+  if (!name) { showToast('개념 이름을 입력해주세요', 'error'); return; }
+  const editId = document.getElementById('cEditId').value;
+  const id = editId || 'c_' + Date.now();
+  const projects = document.getElementById('cProjects').value.split(',').map(s=>s.trim()).filter(Boolean);
+  _db.ref(FB.concepts + '/' + id).set({
+    name, body, category: document.getElementById('cCategory').value,
+    projects, created: editId ? (concepts[editId]?.created || Date.now()) : Date.now(), updated: Date.now()
+  }).then(() => {
+    closeModal('conceptModal');
+    showToast('📚 개념노트 저장!', 'success');
+  }).catch(() => showToast('저장 실패', 'error'));
+}
+
+function renderConceptFilter() {
+  const cats = ['전체', ...new Set(Object.values(concepts).map(c => c.category || '기타'))];
+  document.getElementById('conceptFilter').innerHTML = cats.map(cat =>
+    `<button class="filter-chip ${cat===conceptFilter?'active':''}" onclick="setConceptFilter('${cat}', this)">${cat}</button>`
+  ).join('');
+}
+
+function setConceptFilter(cat, btn) {
+  conceptFilter = cat;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderConcepts();
+}
+
+function renderConcepts() {
+  const el = document.getElementById('conceptGrid');
+  let items = Object.entries(concepts);
+  if (conceptFilter !== '전체') items = items.filter(([,c]) => c.category === conceptFilter);
+  items.sort((a,b) => (b[1].updated||0) - (a[1].updated||0));
+  if (!items.length) { el.innerHTML = '<div class="empty" style="grid-column:1/-1;"><div class="icon">📚</div>아직 개념노트가 없어요.<br>+ 새 개념 버튼으로 추가해보세요!</div>'; return; }
+  el.innerHTML = items.map(([id, c]) => `
+    <div class="concept-card" onclick="openConceptDetail('${id}')">
+      <div class="concept-name">${escHtml(c.name)}</div>
+      <div class="concept-preview">${escHtml(c.body||'')}</div>
+      <div class="concept-footer">
+        <span class="badge badge-${(c.category||'기타').toLowerCase()}">${c.category||'기타'}</span>
+        <span style="font-size:11px;color:var(--text3);">${formatDate(tsToDate(c.updated||c.created))}</span>
+      </div>
+    </div>`).join('');
+}
+
+function openConceptDetail(id) {
+  currentConceptId = id;
+  const c = concepts[id];
+  document.getElementById('conceptDetailContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span class="badge badge-${(c.category||'기타').toLowerCase()}">${c.category||'기타'}</span>
+      ${(c.projects||[]).map(p=>`<span class="badge" style="background:var(--bg3);color:var(--text2);">📂 ${escHtml(p)}</span>`).join('')}
+    </div>
+    <h3 style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">${escHtml(c.name)}</h3>
+    <div style="font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap;">${escHtml(c.body||'')}</div>`;
+  openModal('conceptDetailModal');
+}
+function editConceptFromDetail() { closeModal('conceptDetailModal'); openConceptModal(currentConceptId); }
+function deleteConceptFromDetail() {
+  if (!confirm('삭제할까요?')) return;
+  _db.ref(FB.concepts + '/' + currentConceptId).remove()
+    .then(() => { closeModal('conceptDetailModal'); showToast('삭제됨', 'info'); })
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+// ─── PROJECTS ───────────────────────────────────────────────────────────────
+function renderProjects() {
+  document.getElementById('projectList').innerHTML = PROJECTS.map(p => `
+    <div class="proj-card">
+      <div class="proj-icon" style="background:${p.color}">${p.icon}</div>
+      <div class="proj-info">
+        <div class="proj-name">${p.name} <span class="proj-version">${p.version}</span></div>
+        <div class="proj-desc">${p.desc}</div>
+        <div class="proj-skills">
+          ${p.skills.map(s=>`<span class="badge badge-${s.toLowerCase()}">${s}</span>`).join('')}
+        </div>
+      </div>
+      ${p.url ? `<a href="${p.url}" target="_blank" class="btn btn-outline btn-sm" style="align-self:flex-start;flex-shrink:0;">🔗</a>` : ''}
+    </div>`).join('');
+}
+
+// ─── QUIZ ────────────────────────────────────────────────────────────────────
+function startQuiz() {
+  const cat = document.getElementById('quizCategory').value;
+  const count = parseInt(document.getElementById('quizCount').value);
+  const diff = document.getElementById('quizDifficulty').value;
+  const reqId = 'q_' + Date.now();
+  document.getElementById('quizSetup').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('quizArea').innerHTML = `
+    <div class="quiz-box" style="text-align:center;">
+      <div class="loading-spin"></div>
+      <p style="color:var(--text2);font-size:13px;">Claude AI가 <b>${cat}</b> ${diff} 문제 ${count}개를 생성하는 중...</p>
+      <p style="color:var(--text3);font-size:12px;margin-top:8px;">데스크탑 데몬이 연결되어 있어야 해요.</p>
+      <button class="btn btn-outline btn-sm" onclick="cancelQuiz()" style="margin-top:16px;">취소</button>
+    </div>`;
+  _db.ref(FB.quiz_req + '/' + reqId).set({ category: cat, count, difficulty: diff, created: Date.now() });
+  const listener = _db.ref(FB.quiz_res + '/' + reqId).on('value', snap => {
+    if (!snap.val()) return;
+    _db.ref(FB.quiz_res + '/' + reqId).off('value', listener);
+    const result = snap.val();
+    if (result.error) { showToast('퀴즈 생성 실패: ' + result.error, 'error'); cancelQuiz(); return; }
+    startQuizWithData(result.questions || []);
+  });
+  setTimeout(() => {
+    _db.ref(FB.quiz_res + '/' + reqId).off('value', listener);
+    if (quizData) return;
+    showToast('타임아웃 — 데몬이 연결되지 않았어요. 오프라인 퀴즈로 전환합니다.', 'error');
+    startLocalQuiz();
+  }, 30000);
+}
+
+function startLocalQuiz() {
+  const cat = document.getElementById('quizCategory').value;
+  const count = parseInt(document.getElementById('quizCount').value);
+  let bank = cat === '전체' ? Object.values(LOCAL_QUIZ_BANK).flat() : (LOCAL_QUIZ_BANK[cat] || LOCAL_QUIZ_BANK['Git']);
+  const shuffled = bank.sort(() => Math.random() - 0.5).slice(0, Math.min(count, bank.length));
+  startQuizWithData(shuffled);
+}
+
+function startQuizWithData(questions) {
+  quizData = questions; currentQuizQ = 0; quizScore = 0;
+  document.getElementById('quizSetup').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  if (currentQuizQ >= quizData.length) { renderQuizResult(); return; }
+  quizAnswered = false;
+  const q = quizData[currentQuizQ];
+  document.getElementById('quizArea').innerHTML = `
+    <div class="quiz-box">
+      <div class="quiz-progress">${currentQuizQ + 1} / ${quizData.length} · 점수 ${quizScore}점</div>
+      <div class="quiz-q" style="margin-top:10px;">${escHtml(q.q || q.question || '')}</div>
+      <div class="quiz-options">
+        ${(q.opts || q.options || []).map((opt, i) => `
+          <button class="quiz-opt" onclick="selectQuizOpt(${i})">${String.fromCharCode(65+i)}. ${escHtml(opt)}</button>
+        `).join('')}
+      </div>
+      <div id="quizExplain" style="display:none;"></div>
+      <div class="quiz-nav">
+        <span></span>
+        <button class="btn btn-outline btn-sm" id="quizNextBtn" style="display:none;" onclick="nextQuestion()">다음 →</button>
+      </div>
+    </div>`;
+}
+
+function selectQuizOpt(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizData[currentQuizQ];
+  const ans = q.ans !== undefined ? q.ans : q.answer;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, idx) => {
+    btn.classList.add('revealed');
+    if (idx === ans) btn.classList.add('correct');
+    else if (idx === i && i !== ans) btn.classList.add('wrong');
+  });
+  if (i === ans) quizScore++;
+  const explain = document.getElementById('quizExplain');
+  explain.style.display = 'block';
+  explain.innerHTML = `<div class="quiz-explain">${i === ans ? '✅ 정답!' : `❌ 오답 (정답: ${String.fromCharCode(65+ans)})`}<br><br>${escHtml(q.exp || q.explanation || '')}</div>`;
+  document.getElementById('quizNextBtn').style.display = 'inline-flex';
+}
+
+function nextQuestion() { currentQuizQ++; renderQuizQuestion(); }
+
+function renderQuizResult() {
+  const total = quizData.length;
+  const pct = Math.round(quizScore / total * 100);
+  const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪';
+  document.getElementById('quizArea').innerHTML = `
+    <div class="quiz-box quiz-score">
+      <div style="font-size:40px;margin-bottom:8px;">${emoji}</div>
+      <div class="big">${quizScore} / ${total}</div>
+      <div style="font-size:14px;color:var(--text2);margin:8px 0;">${pct}% 정답률</div>
+      <div style="font-size:13px;color:var(--text3);">${pct>=80?'훌륭해요! 이 개념은 잘 이해했어요.':pct>=60?'좋아요! 조금 더 연습하면 완벽해요.':'개념노트를 다시 읽고 도전해봐요!'}</div>
+      <div style="margin-top:20px;display:flex;gap:8px;justify-content:center;">
+        <button class="btn btn-primary" onclick="startLocalQuiz()">🔄 다시 풀기</button>
+        <button class="btn btn-outline" onclick="cancelQuiz()">← 설정으로</button>
+      </div>
+    </div>`;
+  _db.ref(FB.quiz_res + '/local_' + Date.now()).set({ score: quizScore, total, pct, date: today() }).catch(()=>{});
+}
+
+function cancelQuiz() {
+  quizData = null;
+  document.getElementById('quizSetup').style.display = 'block';
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('quizArea').innerHTML = '';
+}
+
+// ─── EXPLAIN ────────────────────────────────────────────────────────────────
+function requestExplain() {
+  const query = document.getElementById('explainQuery').value.trim();
+  if (!query) { showToast('질문을 입력해주세요', 'error'); return; }
+  const ctx = document.getElementById('explainContext').value.trim();
+  const reqId = 'e_' + Date.now();
+  pendingExplainId = reqId;
+  const resultEl = document.getElementById('explainResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `<div class="explain-result"><div class="loading-spin"></div><p style="text-align:center;color:var(--text3);font-size:12px;">만복이가 설명 준비 중... (데몬 필요)</p></div>`;
+  _db.ref(FB.explain_req + '/' + reqId).set({ query, context: ctx, created: Date.now() });
+  _db.ref(FB.explain_res + '/' + reqId).on('value', snap => {
+    if (!snap.val() || pendingExplainId !== reqId) return;
+    _db.ref(FB.explain_res + '/' + reqId).off('value');
+    const r = snap.val();
+    if (r.error) { resultEl.innerHTML = `<div class="explain-result" style="border-left:3px solid var(--red);padding-left:12px;"><p style="color:var(--red);">오류: ${r.error}</p></div>`; return; }
+    resultEl.innerHTML = `<div class="explain-result"><h4>💡 ${escHtml(query)}</h4><div style="white-space:pre-wrap;font-size:13px;color:var(--text2);line-height:1.8;">${escHtml(r.explanation || r.content || '')}</div></div>`;
+    document.getElementById('explainQuery').value = '';
+    document.getElementById('explainContext').value = '';
+    showToast('🤖 설명 완료!', 'success');
+    _db.ref(FB.explain_res + '/hist_' + reqId).set({ query, explanation: r.explanation || r.content, date: today() }).catch(()=>{});
+  });
+  setTimeout(() => {
+    if (pendingExplainId !== reqId) return;
+    resultEl.innerHTML = `<div class="explain-result"><p style="color:var(--red);">⏱️ 30초 타임아웃 — 데몬이 연결되지 않았어요.<br>desktop_daemon.py가 실행 중인지 확인해주세요.</p></div>`;
+  }, 30000);
+}
+
+// ─── STATS ──────────────────────────────────────────────────────────────────
+let _charts = {};
+function renderStats() {
+  if (!document.getElementById('tab-stats').classList.contains('active')) return;
+  const totalTopics = ROADMAP.reduce((a,s) => a + s.topics.length, 0);
+  const donePct = Math.round(Object.values(roadmapProgress).filter(v=>v?.completed).length / totalTopics * 100);
+  const discCount = Object.values(discoveries).reduce((a, d) => a + Object.keys(d).length, 0);
+  const journalDays = Object.keys(journals).length;
+  const conceptCount = Object.keys(concepts).length;
+  const totalMinutes = Object.values(journals).reduce((a,j) => a + (j.duration||0), 0);
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-box"><div class="stat-val">${donePct}%</div><div class="stat-label">로드맵 달성률</div></div>
+    <div class="stat-box"><div class="stat-val">${journalDays}</div><div class="stat-label">학습일지 일수</div></div>
+    <div class="stat-box"><div class="stat-val">${discCount}</div><div class="stat-label">즉흥 메모 수</div></div>
+    <div class="stat-box"><div class="stat-val">${conceptCount}</div><div class="stat-label">개념노트 수</div></div>
+    <div class="stat-box"><div class="stat-val">${totalMinutes}</div><div class="stat-label">총 학습 분</div></div>
+    <div class="stat-box"><div class="stat-val">${PROJECTS.length}</div><div class="stat-label">완료 프로젝트</div></div>`;
+  // Weekly chart
+  const last7 = Array.from({length:7}, (_,i) => { const d = new Date(); d.setDate(d.getDate()-i); return d.toISOString().slice(0,10); }).reverse();
+  const weeklyData = last7.map(d => journals[d]?.duration || 0);
+  if (_charts.weekly) _charts.weekly.destroy();
+  _charts.weekly = new Chart(document.getElementById('chartWeekly'), {
+    type: 'bar',
+    data: { labels: last7.map(d => d.slice(5)), datasets: [{ data: weeklyData, backgroundColor: 'rgba(232,114,12,.7)', borderRadius: 4 }] },
+    options: { plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true,ticks:{color:'var(--text3)'} }, x:{ticks:{color:'var(--text3)'}} } }
+  });
+  // Category chart
+  const cats = {}; Object.values(discoveries).forEach(day => Object.values(day).forEach(d => { cats[d.category||'기타'] = (cats[d.category||'기타']||0)+1; }));
+  if (_charts.cat) _charts.cat.destroy();
+  _charts.cat = new Chart(document.getElementById('chartCategory'), {
+    type: 'doughnut',
+    data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#3b82f6','#f59e0b','#8b5cf6','#10b981','#ec4899','#ef4444','#06b6d4','#84cc16','#9ca3af'] }] },
+    options: { plugins:{legend:{position:'right',labels:{color:'var(--text)',font:{size:12}}}} }
+  });
+  // Roadmap chart
+  const stageData = ROADMAP.map(stage => {
+    const done = stage.topics.filter(t => roadmapProgress[t.id]?.completed).length;
+    return Math.round(done / stage.topics.length * 100);
+  });
+  if (_charts.rm) _charts.rm.destroy();
+  _charts.rm = new Chart(document.getElementById('chartRoadmap'), {
+    type: 'bar',
+    data: { labels: ROADMAP.map(s => s.title.split('—')[0].trim()), datasets: [{ data: stageData, backgroundColor: ['rgba(232,114,12,.8)','rgba(37,99,235,.8)','rgba(124,58,237,.8)'], borderRadius: 4 }] },
+    options: { indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{beginAtZero:true,max:100,ticks:{color:'var(--text3)'} }, y:{ticks:{color:'var(--text3)'}} } }
+  });
+}
+
+// ─── UTILS ──────────────────────────────────────────────────────────────────
+function today() { return new Date().toISOString().slice(0,10); }
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d.includes('T') ? d : d + 'T00:00:00');
+  return date.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+}
+function tsToDate(ts) { return new Date(ts).toISOString().slice(0,10); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('version').textContent = APP_VERSION;
+  const theme = localStorage.getItem('study_theme') || 'light';
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('.theme-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  initFirebase();
+  renderRoadmap();
+  renderProjects();
+  // seed initial concepts if empty (after first Firebase load)
+  setTimeout(() => {
+    if (Object.keys(concepts).length === 0) seedInitialConcepts();
+  }, 3000);
+});
+
+function seedInitialConcepts() {
+  const initial = [
+    { name: 'BOM (Byte Order Mark)', category: 'Git', body: '파일 맨 앞의 보이지 않는 3바이트(EF BB BF).\n메모장/PowerShell이 UTF-8 파일 저장 시 자동으로 붙임.\n\n문제: 브라우저/파이썬 JSON 파서가 파일 첫 문자를 BOM으로 인식 → 파싱 오류\n해결: UTF-8 without BOM으로 저장 (VS Code → 우측 하단 인코딩 클릭 → BOM 없는 UTF-8)\n\n오늘 발생한 문제: multimedia.json BOM 제거 커밋 시 git pull 없이 push → remote 항목 덮어씀', projects: ['Diary_for_Barobogi'] },
+    { name: 'CORS & CORS 프록시', category: 'Web', body: 'CORS = Cross-Origin Resource Sharing\n\n브라우저 SOP(Same-Origin Policy) 정책:\n- 다른 도메인의 API를 브라우저에서 직접 호출 불가\n- 예) barobogi.github.io에서 news.google.com API 호출 → 차단\n\n해결책:\n1. 서버에서 Access-Control-Allow-Origin 헤더 응답에 포함\n2. CORS 프록시 경유: 브라우저 → 프록시 서버 → 외부 API\n   - corsproxy.io, allorigins.win, thingproxy.freeboard.io\n\n주의: allorigins.win은 응답을 {contents: "..."} JSON으로 감쌈\n→ await res.json()).contents 로 꺼내야 함', projects: ['stock-dashboard'] },
+    { name: 'Firebase Rules (보안 규칙)', category: 'Firebase', body: 'Firebase Realtime DB 접근 제어 규칙\n\ntest mode (현재):\n{\n  "rules": {\n    ".read": "now < 1752019200000",  // 만료일까지만\n    ".write": "now < 1752019200000"\n  }\n}\n→ 누구나 읽기/쓰기 가능. 만료 후 모든 쓰기 실패!\n\n운영 모드 (권장):\n{\n  "rules": {\n    "study_all": {\n      ".read": "auth != null",\n      ".write": "auth != null"\n    }\n  }\n}\n→ 인증된 사용자만 접근 가능\n\n현재 대응: 만료 전 toast 경고 + 규칙 업데이트 알림', projects: ['stock-dashboard', 'study-dashboard'] },
+    { name: 'git pull 없이 push의 위험', category: 'Git', body: '문제: 두 시스템이 같은 파일을 독립적으로 수정할 때\n\n발생 시나리오:\n1. Render 백엔드가 GitHub API로 _data/multimedia.json 수정\n   (로컬 git에는 반영 안 됨)\n2. 로컬에서 multimedia.json 수정 후 git pull 없이 push\n3. → remote의 최신 변경사항을 로컬 구버전이 덮어씀!\n\n결과: 5개 영상 항목 소실\n\n안전한 순서: git pull → 작업 → git add → git commit → git push\n\n근본 해결: 두 시스템이 같은 파일을 수정하지 않게 설계 (단일 소스 원칙)', projects: ['Diary_for_Barobogi'] },
+    { name: 'Claude Tool Use 패턴', category: 'AI', body: 'Claude가 외부 도구(파일 읽기, API 호출 등)를 사용하는 패턴\n\n기본 루프:\nwhile count < max:\n    response = client.messages.create(tools=[...], messages=[...])\n    if response.stop_reason == "end_turn":\n        break  # 완료\n    if response.stop_reason == "tool_use":\n        # 도구 실행\n        tool_result = execute_tool(response)\n        # 결과를 messages에 추가\n        messages.append({"role":"user", "content": [tool_result]})\n        # 다시 API 호출\n\n핵심: stop_reason이 "end_turn"이 될 때까지 반복\n최대 반복 횟수 제한 필수 (무한루프 방지)\n\nRemote Claude v1.3~1.4에서 구현: read_file, write_file, run_command', projects: ['remote-claude'] },
+    { name: '계좌 ID 참조 무결성', category: 'Python', body: '숫자 ID로 데이터를 참조하는 구조에서 ID 변경 시 치명적 오류 발생\n\n발생한 문제:\n- 기존: id3=ISA, id4=IRP\n- 신규 계좌 삽입: id3=일반계좌3, id4=일반계좌4, id5=ISA, id6=IRP\n- 결과: 기존 accountId=3 데이터(ISA)가 새 id3(일반계좌3)으로 오매핑!\n\n원칙:\n1. 한 번 부여한 ID는 절대 변경/삽입 금지\n2. 신규 항목은 항상 max_id + 1부터\n3. 삭제된 ID도 재사용 금지 (EXCLUDED_NUMS 패턴)\n\n적용: 계좌 id1~7 영구 고정, 신규는 id8부터', projects: ['stock-dashboard'] },
+  ];
+  initial.forEach((c, i) => {
+    _db.ref(FB.concepts + '/seed_' + i).set({...c, created: Date.now() - i * 1000, updated: Date.now() - i * 1000}).catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
