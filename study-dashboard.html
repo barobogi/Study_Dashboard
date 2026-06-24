@@ -800,7 +800,8 @@ function saveJournal() {
   const content = document.getElementById('journalContent').value.trim();
   if (!content) { showToast('내용을 입력해주세요', 'error'); return; }
   const duration = parseInt(document.getElementById('journalDuration').value) || 0;
-  _db.ref(FB.journal + '/' + today()).set({ content, duration, mood: selectedMood, saved: Date.now() })
+  // push()로 같은 날 여러 개 저장 가능 (set()은 덮어씀)
+  _db.ref(FB.journal + '/' + today()).push({ content, duration, mood: selectedMood, saved: Date.now() })
     .then(() => {
       document.getElementById('journalContent').value = '';
       document.getElementById('journalDuration').value = '';
@@ -810,17 +811,24 @@ function saveJournal() {
 
 function renderJournals() {
   const el = document.getElementById('journalList');
-  const entries = Object.entries(journals).sort((a,b) => b[0].localeCompare(a[0]));
-  if (!entries.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
-  el.innerHTML = entries.map(([date, d]) => `
+  const dates = Object.keys(journals).sort((a,b) => b.localeCompare(a));
+  if (!dates.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
+  el.innerHTML = dates.map(date => {
+    const dayEntries = journals[date];
+    // push()로 저장 시 {id: {...}} 구조, 이전 set() 데이터는 직접 객체
+    const items = (dayEntries && typeof dayEntries.content === 'string')
+      ? [dayEntries]  // 구형 데이터 (set으로 저장된 것) 호환
+      : Object.values(dayEntries || {}).sort((a,b) => (a.saved||0) - (b.saved||0));
+    return items.map((d, i) => `
     <div class="journal-item">
       <div class="journal-meta">
-        <span class="journal-date">${formatDate(date)}</span>
+        <span class="journal-date">${formatDate(date)}${items.length > 1 ? ` · ${i+1}번째` : ''}</span>
         ${d.duration ? `<span class="journal-duration">⏱️ ${d.duration}분</span>` : ''}
         ${d.mood ? `<span style="font-size:18px;">${d.mood}</span>` : ''}
       </div>
       <div class="journal-content">${escHtml(d.content)}</div>
     </div>`).join('');
+  }).join('');
 }
 
 // ─── CONCEPTS ───────────────────────────────────────────────────────────────
