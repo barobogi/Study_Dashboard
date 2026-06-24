@@ -19,13 +19,14 @@ const FB = {
   roadmap:    'study_all/roadmap',
   discovery:  'study_all/discovery',
   journal:    'study_all/journal',
+  memos:      'study_all/memos',
   concepts:   'study_all/concepts',
   quiz_req:   'study_all/quiz_requests',
   quiz_res:   'study_all/quiz_results',
   explain_req:'study_all/explain_requests',
   explain_res:'study_all/explain_results',
 };
-const APP_VERSION = 'v1.0';
+const APP_VERSION = 'v1.1';
 </script>
 <style>
 :root {
@@ -262,6 +263,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
     <button class="tab-btn active" onclick="switchTab('roadmap',this)">🗺️ 로드맵</button>
     <button class="tab-btn" onclick="switchTab('discovery',this)">⚡ 오늘의 발견</button>
     <button class="tab-btn" onclick="switchTab('journal',this)">📓 학습일지</button>
+    <button class="tab-btn" onclick="switchTab('memo',this)">📝 메모장</button>
     <button class="tab-btn" onclick="switchTab('concepts',this)">📚 개념노트</button>
     <button class="tab-btn" onclick="switchTab('projects',this)">🏆 프로젝트</button>
     <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
