@@ -245,6 +245,13 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
 
 /* TAGS ROW */
 .tags-row { display:flex; flex-wrap:wrap; gap:4px; }
+
+/* CHAT */
+.chat-bubble { max-width:80%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+.chat-bubble.user { align-self:flex-end; background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+.chat-bubble.bot { align-self:flex-start; background:var(--bg2); color:var(--text1); border:1px solid var(--border); border-bottom-left-radius:4px; }
+.chat-label { font-size:11px; color:var(--text3); margin-bottom:2px; }
+.chat-label.user-label { align-self:flex-end; }
 </style>
 </head>
 <body>
@@ -269,6 +276,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
     <button class="tab-btn" onclick="switchTab('projects',this)">🏆 프로젝트</button>
     <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
     <button class="tab-btn" onclick="switchTab('explain',this)">🤖 AI 설명</button>
+    <button class="tab-btn" onclick="switchTab('chat',this)">💬 만복이 채팅</button>
     <button class="tab-btn" onclick="switchTab('stats',this)">📊 통계</button>
   </div>
 </div>
@@ -474,6 +482,26 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
   </div>
   <div id="explainResult" style="display:none;"></div>
   <div id="explainHistory" style="margin-top:20px;"></div>
+</div>
+
+<!-- ===== 💬 만복이 채팅 ===== -->
+<div class="tab-panel" id="tab-chat">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">💬 만복이 채팅</div>
+      <div class="sec-sub">만복이(Claude AI)와 직접 대화해요 — 데몬 연결 필요</div>
+    </div>
+  </div>
+  <!-- 채팅 히스토리 -->
+  <div id="chatHistory" style="height:400px;overflow-y:auto;padding:12px 0;display:flex;flex-direction:column;gap:8px;"></div>
+  <!-- 입력창 -->
+  <div style="display:flex;gap:8px;margin-top:12px;">
+    <input id="chatInput" type="text" placeholder="만복이에게 말 걸어보세요..."
+           style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text1);font-size:14px;"
+           onkeydown="if(event.key==='Enter')sendChatMessage()"/>
+    <button class="btn btn-primary" onclick="sendChatMessage()">전송</button>
+  </div>
+  <div id="chatStatus" style="font-size:12px;color:var(--text3);margin-top:6px;"></div>
 </div>
 
 <!-- ===== 📊 통계 ===== -->
@@ -1238,6 +1266,45 @@ function requestExplain() {
     if (pendingExplainId !== reqId) return;
     resultEl.innerHTML = `<div class="explain-result"><p style="color:var(--red);">⏱️ 30초 타임아웃 — 데몬이 연결되지 않았어요.<br>desktop_daemon.py가 실행 중인지 확인해주세요.</p></div>`;
   }, 30000);
+}
+
+// ===== 💬 만복이 채팅 =====
+const CHAT_REQUESTS_PATH  = 'study_all/chat_requests';
+const CHAT_RESPONSES_PATH = 'study_all/chat_responses';
+let _chatListener = null;
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendChatBubble('user', msg);
+  document.getElementById('chatStatus').textContent = '만복이가 답변 중...';
+  const reqId = 'chat_' + Date.now();
+  _db.ref(CHAT_REQUESTS_PATH + '/' + reqId).set({ message: msg, created: Date.now() });
+  // 응답 대기
+  const ref = _db.ref(CHAT_RESPONSES_PATH + '/' + reqId);
+  ref.on('value', snap => {
+    const data = snap.val();
+    if (!data) return;
+    ref.off();
+    appendChatBubble('bot', data.response || data.error || '오류 발생');
+    document.getElementById('chatStatus').textContent = '';
+    _db.ref(CHAT_RESPONSES_PATH + '/' + reqId).remove();
+  });
+}
+
+function appendChatBubble(role, text) {
+  const wrap = document.getElementById('chatHistory');
+  const label = document.createElement('div');
+  label.className = 'chat-label' + (role === 'user' ? ' user-label' : '');
+  label.textContent = role === 'user' ? '바로보기' : '만복이';
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble ' + role;
+  bubble.textContent = text;
+  wrap.appendChild(label);
+  wrap.appendChild(bubble);
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 // ─── STATS ──────────────────────────────────────────────────────────────────
