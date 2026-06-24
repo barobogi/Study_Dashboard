@@ -19,13 +19,14 @@ const FB = {
   roadmap:    'study_all/roadmap',
   discovery:  'study_all/discovery',
   journal:    'study_all/journal',
+  memos:      'study_all/memos',
   concepts:   'study_all/concepts',
   quiz_req:   'study_all/quiz_requests',
   quiz_res:   'study_all/quiz_results',
   explain_req:'study_all/explain_requests',
   explain_res:'study_all/explain_results',
 };
-const APP_VERSION = 'v1.0';
+const APP_VERSION = 'v1.1';
 </script>
 <style>
 :root {
@@ -170,6 +171,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
 .concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
 .concept-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; cursor:pointer; transition:box-shadow .15s; }
 .concept-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.concept-studied { opacity:.55; background:var(--bg3); }
 .concept-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:6px; }
 .concept-preview { font-size:12px; color:var(--text2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .concept-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
@@ -262,6 +264,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
     <button class="tab-btn active" onclick="switchTab('roadmap',this)">🗺️ 로드맵</button>
     <button class="tab-btn" onclick="switchTab('discovery',this)">⚡ 오늘의 발견</button>
     <button class="tab-btn" onclick="switchTab('journal',this)">📓 학습일지</button>
+    <button class="tab-btn" onclick="switchTab('memo',this)">📝 메모장</button>
     <button class="tab-btn" onclick="switchTab('concepts',this)">📚 개념노트</button>
     <button class="tab-btn" onclick="switchTab('projects',this)">🏆 프로젝트</button>
     <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
@@ -351,10 +354,33 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
           <button class="mood-btn" data-mood="😵" onclick="selectMood(this)">😵</button>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveJournal()">저장</button>
+      <button class="btn btn-primary" id="journalSaveBtn" onclick="saveJournal()">저장</button>
+      <button class="btn btn-outline" id="journalCancelBtn" onclick="cancelJournalEdit()" style="display:none;">취소</button>
     </div>
   </div>
   <div id="journalList"></div>
+</div>
+
+<!-- ===== 📝 메모장 ===== -->
+<div class="tab-panel" id="tab-memo">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">📝 메모장</div>
+      <div class="sec-sub">공부하다 궁금한 것, 나중에 찾아볼 것 — 빠르게 적어두세요</div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="filter-chip active" id="memoFilter-all" onclick="setMemoFilter('all',this)">전체</button>
+      <button class="filter-chip" id="memoFilter-todo" onclick="setMemoFilter('todo',this)">미완료</button>
+      <button class="filter-chip" id="memoFilter-done" onclick="setMemoFilter('done',this)">완료</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="memoInput" placeholder="예) async/await가 뭔지 찾아보기, Firebase Rules 테스트 방법, CORS 프록시 종류 비교..." style="flex:1;" onkeydown="if(event.key==='Enter')saveMemo()" />
+      <button class="btn btn-primary" onclick="saveMemo()">+ 추가</button>
+    </div>
+  </div>
+  <div id="memoList"></div>
 </div>
 
 <!-- ===== 📚 개념노트 ===== -->
@@ -362,7 +388,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
   <div class="sec-header">
     <div>
       <div class="sec-title">📚 개념노트</div>
-      <div class="sec-sub">핵심 개념을 카드로 정리해요 — 나중에 퀴즈에도 활용돼요</div>
+      <div class="sec-sub">이해했으면 체크 — <span id="conceptUnstudiedCount" style="font-weight:600;">미이해 0개</span> · 매일 오후 9시 만복이가 자동 보충</div>
     </div>
     <button class="btn btn-primary btn-sm" onclick="openConceptModal()">+ 새 개념</button>
   </div>
@@ -624,7 +650,9 @@ const LOCAL_QUIZ_BANK = {
 let roadmapProgress = {}; // {topicId: {completed, completedAt}}
 let discoveries = {};     // Firebase snapshot
 let journals = {};
+let memos = {};
 let concepts = {};
+let memoFilterMode = 'all';
 let quizData = null;
 let currentQuizQ = 0;
 let quizScore = 0;
@@ -633,6 +661,8 @@ let selectedMood = '🔥';
 let conceptFilter = '전체';
 let currentConceptId = null;
 let pendingExplainId = null;
+let editJournalDate = null;   // 수정 중인 일지 날짜
+let editJournalId = null;     // 수정 중인 일지 push key
 
 // ─── FIREBASE CONNECT ────────────────────────────────────────────────────────
 function initFirebase() {
@@ -655,6 +685,10 @@ function initFirebase() {
     journals = snap.val() || {};
     renderJournals();
     renderStats();
+  });
+  _db.ref(FB.memos).on('value', snap => {
+    memos = snap.val() || {};
+    renderMemos();
   });
   _db.ref(FB.concepts).on('value', snap => {
     concepts = snap.val() || {};
@@ -800,26 +834,140 @@ function saveJournal() {
   const content = document.getElementById('journalContent').value.trim();
   if (!content) { showToast('내용을 입력해주세요', 'error'); return; }
   const duration = parseInt(document.getElementById('journalDuration').value) || 0;
-  _db.ref(FB.journal + '/' + today()).set({ content, duration, mood: selectedMood, saved: Date.now() })
-    .then(() => {
-      document.getElementById('journalContent').value = '';
-      document.getElementById('journalDuration').value = '';
-      showToast('📓 학습일지 저장!', 'success');
-    }).catch(() => showToast('저장 실패', 'error'));
+  const data = { content, duration, mood: selectedMood, saved: Date.now() };
+
+  if (editJournalId) {
+    // 수정 모드 — 기존 항목 덮어쓰기
+    _db.ref(FB.journal + '/' + editJournalDate + '/' + editJournalId).set(data)
+      .then(() => {
+        cancelJournalEdit();
+        showToast('📓 수정 완료!', 'success');
+      }).catch(() => showToast('저장 실패', 'error'));
+  } else {
+    // 신규 — push()로 같은 날 여러 개 저장 가능
+    _db.ref(FB.journal + '/' + today()).push(data)
+      .then(() => {
+        document.getElementById('journalContent').value = '';
+        document.getElementById('journalDuration').value = '';
+        showToast('📓 학습일지 저장!', 'success');
+      }).catch(() => showToast('저장 실패', 'error'));
+  }
+}
+
+function editJournal(date, id, d) {
+  editJournalDate = date;
+  editJournalId = id;
+  document.getElementById('journalContent').value = d.content || '';
+  document.getElementById('journalDuration').value = d.duration || '';
+  selectMoodByValue(d.mood || '🔥');
+  document.getElementById('journalSaveBtn').textContent = '수정 완료';
+  document.getElementById('journalCancelBtn').style.display = 'inline-flex';
+  document.getElementById('journalContent').focus();
+  document.getElementById('tab-journal').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelJournalEdit() {
+  editJournalDate = null;
+  editJournalId = null;
+  document.getElementById('journalContent').value = '';
+  document.getElementById('journalDuration').value = '';
+  selectMoodByValue('🔥');
+  document.getElementById('journalSaveBtn').textContent = '저장';
+  document.getElementById('journalCancelBtn').style.display = 'none';
+}
+
+function deleteJournal(date, id) {
+  if (!confirm('이 일지를 삭제할까요?')) return;
+  _db.ref(FB.journal + '/' + date + '/' + id).remove()
+    .then(() => showToast('삭제됨', 'info'))
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+function selectMoodByValue(mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.mood === mood);
+  });
+  selectedMood = mood;
 }
 
 function renderJournals() {
   const el = document.getElementById('journalList');
-  const entries = Object.entries(journals).sort((a,b) => b[0].localeCompare(a[0]));
-  if (!entries.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
-  el.innerHTML = entries.map(([date, d]) => `
-    <div class="journal-item">
+  const dates = Object.keys(journals).sort((a,b) => b.localeCompare(a));
+  if (!dates.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
+  el.innerHTML = dates.map(date => {
+    const dayEntries = journals[date];
+    // push() 구조 {id:{...}} vs 구형 set() 구조 {content:...} 호환 처리
+    const items = (dayEntries && typeof dayEntries.content === 'string')
+      ? [{ _id: '_legacy', ...dayEntries }]
+      : Object.entries(dayEntries || {})
+          .map(([id, d]) => ({ _id: id, ...d }))
+          .sort((a,b) => (a.saved||0) - (b.saved||0));
+    return items.map((d, i) => `
+    <div class="journal-item" style="position:relative;">
       <div class="journal-meta">
-        <span class="journal-date">${formatDate(date)}</span>
+        <span class="journal-date">${formatDate(date)}${items.length > 1 ? ` · ${i+1}번째` : ''}</span>
         ${d.duration ? `<span class="journal-duration">⏱️ ${d.duration}분</span>` : ''}
         ${d.mood ? `<span style="font-size:18px;">${d.mood}</span>` : ''}
+        <div style="margin-left:auto;display:flex;gap:4px;">
+          ${d._id !== '_legacy' ? `<button class="btn-ghost btn-sm" onclick="editJournal('${date}','${d._id}',journals['${date}']['${d._id}'])">✏️</button>` : ''}
+          ${d._id !== '_legacy' ? `<button class="btn-ghost btn-sm" style="color:var(--red);" onclick="deleteJournal('${date}','${d._id}')">🗑️</button>` : ''}
+        </div>
       </div>
       <div class="journal-content">${escHtml(d.content)}</div>
+    </div>`).join('');
+  }).join('');
+}
+
+// ─── MEMO ───────────────────────────────────────────────────────────────────
+function saveMemo() {
+  const text = document.getElementById('memoInput').value.trim();
+  if (!text) { showToast('내용을 입력해주세요', 'error'); return; }
+  _db.ref(FB.memos).push({ text, done: false, created: Date.now() })
+    .then(() => {
+      document.getElementById('memoInput').value = '';
+      showToast('📝 메모 추가!', 'success');
+    }).catch(() => showToast('저장 실패', 'error'));
+}
+
+function toggleMemo(id, done) {
+  _db.ref(FB.memos + '/' + id).update({ done: !done })
+    .catch(() => showToast('업데이트 실패', 'error'));
+}
+
+function deleteMemo(id) {
+  if (!confirm('삭제할까요?')) return;
+  _db.ref(FB.memos + '/' + id).remove()
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+function setMemoFilter(mode, btn) {
+  memoFilterMode = mode;
+  document.querySelectorAll('[id^="memoFilter-"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMemos();
+}
+
+function renderMemos() {
+  const el = document.getElementById('memoList');
+  if (!el) return;
+  let items = Object.entries(memos).sort((a,b) => (b[1].created||0) - (a[1].created||0));
+  if (memoFilterMode === 'todo') items = items.filter(([,d]) => !d.done);
+  if (memoFilterMode === 'done') items = items.filter(([,d]) => d.done);
+  const todoCount = Object.values(memos).filter(d => !d.done).length;
+  if (!items.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">📝</div>${memoFilterMode==='done'?'완료된 메모가 없어요.':memoFilterMode==='todo'?'미완료 메모가 없어요! 🎉':'아직 메모가 없어요.<br>공부하다 궁금한 것을 추가해보세요!'}</div>`;
+    return;
+  }
+  el.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">미완료 ${todoCount}개 · 전체 ${Object.keys(memos).length}개</div>` +
+    items.map(([id, d]) => `
+    <div class="card" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:12px 14px;${d.done?'opacity:.6':''}">
+      <input type="checkbox" ${d.done?'checked':''} onchange="toggleMemo('${id}',${d.done})"
+        style="width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;" />
+      <div style="flex:1;">
+        <div style="font-size:13px;color:var(--text);${d.done?'text-decoration:line-through;color:var(--text3);':''}">${escHtml(d.text)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;">${formatDate(tsToDate(d.created||Date.now()))}</div>
+      </div>
+      <button class="btn-ghost btn-sm" style="color:var(--red);flex-shrink:0;" onclick="deleteMemo('${id}')">🗑️</button>
     </div>`).join('');
 }
 
@@ -872,19 +1020,46 @@ function setConceptFilter(cat, btn) {
   renderConcepts();
 }
 
+function toggleConceptStudied(id, current, e) {
+  e.stopPropagation();
+  _db.ref(FB.concepts + '/' + id).update({ studied: !current })
+    .then(() => showToast(!current ? '✅ 이해 완료!' : '↩️ 미완료로 변경', !current ? 'success' : 'info'))
+    .catch(() => showToast('저장 실패', 'error'));
+}
+
 function renderConcepts() {
   const el = document.getElementById('conceptGrid');
   let items = Object.entries(concepts);
   if (conceptFilter !== '전체') items = items.filter(([,c]) => c.category === conceptFilter);
-  items.sort((a,b) => (b[1].updated||0) - (a[1].updated||0));
+  items.sort((a,b) => {
+    // 미완료 먼저, 그 안에서 최신순
+    if (!!a[1].studied !== !!b[1].studied) return a[1].studied ? 1 : -1;
+    return (b[1].updated||0) - (a[1].updated||0);
+  });
+
+  // 미체크(미이해) 카운터 업데이트
+  const unstudied = Object.values(concepts).filter(c => !c.studied).length;
+  const counterEl = document.getElementById('conceptUnstudiedCount');
+  if (counterEl) {
+    counterEl.textContent = `미이해 ${unstudied}개`;
+    counterEl.style.color = unstudied <= 2 ? 'var(--accent)' : 'var(--text3)';
+    counterEl.title = unstudied <= 2 ? '오늘 오후 9시 만복이가 새 개념을 추가할 예정이에요!' : '';
+  }
+
   if (!items.length) { el.innerHTML = '<div class="empty" style="grid-column:1/-1;"><div class="icon">📚</div>아직 개념노트가 없어요.<br>+ 새 개념 버튼으로 추가해보세요!</div>'; return; }
   el.innerHTML = items.map(([id, c]) => `
-    <div class="concept-card" onclick="openConceptDetail('${id}')">
-      <div class="concept-name">${escHtml(c.name)}</div>
+    <div class="concept-card ${c.studied ? 'concept-studied' : ''}" onclick="openConceptDetail('${id}')">
+      <div class="concept-name" style="${c.studied ? 'color:var(--text3);' : ''}">${escHtml(c.name)}</div>
       <div class="concept-preview">${escHtml(c.body||'')}</div>
       <div class="concept-footer">
         <span class="badge badge-${(c.category||'기타').toLowerCase()}">${c.category||'기타'}</span>
-        <span style="font-size:11px;color:var(--text3);">${formatDate(tsToDate(c.updated||c.created))}</span>
+        <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+          <span style="font-size:11px;color:var(--text3);">${formatDate(tsToDate(c.updated||c.created))}</span>
+          <label style="display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:${c.studied?'var(--green)':'var(--text3)'};" title="${c.studied?'이해 완료':'이해했으면 체크!'}">
+            <input type="checkbox" ${c.studied?'checked':''} onchange="toggleConceptStudied('${id}',${!!c.studied},event)" style="accent-color:var(--green);width:14px;height:14px;cursor:pointer;" />
+            ${c.studied ? '이해완료' : '미이해'}
+          </label>
+        </div>
       </div>
     </div>`).join('');
 }
