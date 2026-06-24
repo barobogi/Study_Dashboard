@@ -633,6 +633,8 @@ let selectedMood = '🔥';
 let conceptFilter = '전체';
 let currentConceptId = null;
 let pendingExplainId = null;
+let editJournalDate = null;   // 수정 중인 일지 날짜
+let editJournalId = null;     // 수정 중인 일지 push key
 
 // ─── FIREBASE CONNECT ────────────────────────────────────────────────────────
 function initFirebase() {
