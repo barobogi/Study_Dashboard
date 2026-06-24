@@ -351,7 +351,8 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
           <button class="mood-btn" data-mood="😵" onclick="selectMood(this)">😵</button>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveJournal()">저장</button>
+      <button class="btn btn-primary" id="journalSaveBtn" onclick="saveJournal()">저장</button>
+      <button class="btn btn-outline" id="journalCancelBtn" onclick="cancelJournalEdit()" style="display:none;">취소</button>
     </div>
   </div>
   <div id="journalList"></div>
@@ -802,13 +803,60 @@ function saveJournal() {
   const content = document.getElementById('journalContent').value.trim();
   if (!content) { showToast('내용을 입력해주세요', 'error'); return; }
   const duration = parseInt(document.getElementById('journalDuration').value) || 0;
-  // push()로 같은 날 여러 개 저장 가능 (set()은 덮어씀)
-  _db.ref(FB.journal + '/' + today()).push({ content, duration, mood: selectedMood, saved: Date.now() })
-    .then(() => {
-      document.getElementById('journalContent').value = '';
-      document.getElementById('journalDuration').value = '';
-      showToast('📓 학습일지 저장!', 'success');
-    }).catch(() => showToast('저장 실패', 'error'));
+  const data = { content, duration, mood: selectedMood, saved: Date.now() };
+
+  if (editJournalId) {
+    // 수정 모드 — 기존 항목 덮어쓰기
+    _db.ref(FB.journal + '/' + editJournalDate + '/' + editJournalId).set(data)
+      .then(() => {
+        cancelJournalEdit();
+        showToast('📓 수정 완료!', 'success');
+      }).catch(() => showToast('저장 실패', 'error'));
+  } else {
+    // 신규 — push()로 같은 날 여러 개 저장 가능
+    _db.ref(FB.journal + '/' + today()).push(data)
+      .then(() => {
+        document.getElementById('journalContent').value = '';
+        document.getElementById('journalDuration').value = '';
+        showToast('📓 학습일지 저장!', 'success');
+      }).catch(() => showToast('저장 실패', 'error'));
+  }
+}
+
+function editJournal(date, id, d) {
+  editJournalDate = date;
+  editJournalId = id;
+  document.getElementById('journalContent').value = d.content || '';
+  document.getElementById('journalDuration').value = d.duration || '';
+  selectMoodByValue(d.mood || '🔥');
+  document.getElementById('journalSaveBtn').textContent = '수정 완료';
+  document.getElementById('journalCancelBtn').style.display = 'inline-flex';
+  document.getElementById('journalContent').focus();
+  document.getElementById('tab-journal').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelJournalEdit() {
+  editJournalDate = null;
+  editJournalId = null;
+  document.getElementById('journalContent').value = '';
+  document.getElementById('journalDuration').value = '';
+  selectMoodByValue('🔥');
+  document.getElementById('journalSaveBtn').textContent = '저장';
+  document.getElementById('journalCancelBtn').style.display = 'none';
+}
+
+function deleteJournal(date, id) {
+  if (!confirm('이 일지를 삭제할까요?')) return;
+  _db.ref(FB.journal + '/' + date + '/' + id).remove()
+    .then(() => showToast('삭제됨', 'info'))
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+function selectMoodByValue(mood) {
+  document.querySelectorAll('.mood-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.mood === mood);
+  });
+  selectedMood = mood;
 }
 
 function renderJournals() {
@@ -817,16 +865,22 @@ function renderJournals() {
   if (!dates.length) { el.innerHTML = '<div class="empty"><div class="icon">📓</div>아직 학습일지가 없어요.<br>오늘의 배움을 기록해보세요!</div>'; return; }
   el.innerHTML = dates.map(date => {
     const dayEntries = journals[date];
-    // push()로 저장 시 {id: {...}} 구조, 이전 set() 데이터는 직접 객체
+    // push() 구조 {id:{...}} vs 구형 set() 구조 {content:...} 호환 처리
     const items = (dayEntries && typeof dayEntries.content === 'string')
-      ? [dayEntries]  // 구형 데이터 (set으로 저장된 것) 호환
-      : Object.values(dayEntries || {}).sort((a,b) => (a.saved||0) - (b.saved||0));
+      ? [{ _id: '_legacy', ...dayEntries }]
+      : Object.entries(dayEntries || {})
+          .map(([id, d]) => ({ _id: id, ...d }))
+          .sort((a,b) => (a.saved||0) - (b.saved||0));
     return items.map((d, i) => `
-    <div class="journal-item">
+    <div class="journal-item" style="position:relative;">
       <div class="journal-meta">
         <span class="journal-date">${formatDate(date)}${items.length > 1 ? ` · ${i+1}번째` : ''}</span>
         ${d.duration ? `<span class="journal-duration">⏱️ ${d.duration}분</span>` : ''}
         ${d.mood ? `<span style="font-size:18px;">${d.mood}</span>` : ''}
+        <div style="margin-left:auto;display:flex;gap:4px;">
+          ${d._id !== '_legacy' ? `<button class="btn-ghost btn-sm" onclick="editJournal('${date}','${d._id}',journals['${date}']['${d._id}'])">✏️</button>` : ''}
+          ${d._id !== '_legacy' ? `<button class="btn-ghost btn-sm" style="color:var(--red);" onclick="deleteJournal('${date}','${d._id}')">🗑️</button>` : ''}
+        </div>
       </div>
       <div class="journal-content">${escHtml(d.content)}</div>
     </div>`).join('');
