@@ -917,6 +917,59 @@ function renderJournals() {
   }).join('');
 }
 
+// ─── MEMO ───────────────────────────────────────────────────────────────────
+function saveMemo() {
+  const text = document.getElementById('memoInput').value.trim();
+  if (!text) { showToast('내용을 입력해주세요', 'error'); return; }
+  _db.ref(FB.memos).push({ text, done: false, created: Date.now() })
+    .then(() => {
+      document.getElementById('memoInput').value = '';
+      showToast('📝 메모 추가!', 'success');
+    }).catch(() => showToast('저장 실패', 'error'));
+}
+
+function toggleMemo(id, done) {
+  _db.ref(FB.memos + '/' + id).update({ done: !done })
+    .catch(() => showToast('업데이트 실패', 'error'));
+}
+
+function deleteMemo(id) {
+  if (!confirm('삭제할까요?')) return;
+  _db.ref(FB.memos + '/' + id).remove()
+    .catch(() => showToast('삭제 실패', 'error'));
+}
+
+function setMemoFilter(mode, btn) {
+  memoFilterMode = mode;
+  document.querySelectorAll('[id^="memoFilter-"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMemos();
+}
+
+function renderMemos() {
+  const el = document.getElementById('memoList');
+  if (!el) return;
+  let items = Object.entries(memos).sort((a,b) => (b[1].created||0) - (a[1].created||0));
+  if (memoFilterMode === 'todo') items = items.filter(([,d]) => !d.done);
+  if (memoFilterMode === 'done') items = items.filter(([,d]) => d.done);
+  const todoCount = Object.values(memos).filter(d => !d.done).length;
+  if (!items.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">📝</div>${memoFilterMode==='done'?'완료된 메모가 없어요.':memoFilterMode==='todo'?'미완료 메모가 없어요! 🎉':'아직 메모가 없어요.<br>공부하다 궁금한 것을 추가해보세요!'}</div>`;
+    return;
+  }
+  el.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">미완료 ${todoCount}개 · 전체 ${Object.keys(memos).length}개</div>` +
+    items.map(([id, d]) => `
+    <div class="card" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:12px 14px;${d.done?'opacity:.6':''}">
+      <input type="checkbox" ${d.done?'checked':''} onchange="toggleMemo('${id}',${d.done})"
+        style="width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;" />
+      <div style="flex:1;">
+        <div style="font-size:13px;color:var(--text);${d.done?'text-decoration:line-through;color:var(--text3);':''}">${escHtml(d.text)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;">${formatDate(tsToDate(d.created||Date.now()))}</div>
+      </div>
+      <button class="btn-ghost btn-sm" style="color:var(--red);flex-shrink:0;" onclick="deleteMemo('${id}')">🗑️</button>
+    </div>`).join('');
+}
+
 // ─── CONCEPTS ───────────────────────────────────────────────────────────────
 function openConceptModal(id) {
   document.getElementById('cEditId').value = id || '';
