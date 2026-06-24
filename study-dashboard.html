@@ -171,6 +171,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
 .concept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
 .concept-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px; cursor:pointer; transition:box-shadow .15s; }
 .concept-card:hover { box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.concept-studied { opacity:.55; background:var(--bg3); }
 .concept-name { font-size:14px; font-weight:600; color:var(--text); margin-bottom:6px; }
 .concept-preview { font-size:12px; color:var(--text2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .concept-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
@@ -387,7 +388,7 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
   <div class="sec-header">
     <div>
       <div class="sec-title">📚 개념노트</div>
-      <div class="sec-sub">핵심 개념을 카드로 정리해요 — 나중에 퀴즈에도 활용돼요</div>
+      <div class="sec-sub">이해했으면 체크 — <span id="conceptUnstudiedCount" style="font-weight:600;">미이해 0개</span> · 매일 오후 9시 만복이가 자동 보충</div>
     </div>
     <button class="btn btn-primary btn-sm" onclick="openConceptModal()">+ 새 개념</button>
   </div>
@@ -1019,19 +1020,46 @@ function setConceptFilter(cat, btn) {
   renderConcepts();
 }
 
+function toggleConceptStudied(id, current, e) {
+  e.stopPropagation();
+  _db.ref(FB.concepts + '/' + id).update({ studied: !current })
+    .then(() => showToast(!current ? '✅ 이해 완료!' : '↩️ 미완료로 변경', !current ? 'success' : 'info'))
+    .catch(() => showToast('저장 실패', 'error'));
+}
+
 function renderConcepts() {
   const el = document.getElementById('conceptGrid');
   let items = Object.entries(concepts);
   if (conceptFilter !== '전체') items = items.filter(([,c]) => c.category === conceptFilter);
-  items.sort((a,b) => (b[1].updated||0) - (a[1].updated||0));
+  items.sort((a,b) => {
+    // 미완료 먼저, 그 안에서 최신순
+    if (!!a[1].studied !== !!b[1].studied) return a[1].studied ? 1 : -1;
+    return (b[1].updated||0) - (a[1].updated||0);
+  });
+
+  // 미체크(미이해) 카운터 업데이트
+  const unstudied = Object.values(concepts).filter(c => !c.studied).length;
+  const counterEl = document.getElementById('conceptUnstudiedCount');
+  if (counterEl) {
+    counterEl.textContent = `미이해 ${unstudied}개`;
+    counterEl.style.color = unstudied <= 2 ? 'var(--accent)' : 'var(--text3)';
+    counterEl.title = unstudied <= 2 ? '오늘 오후 9시 만복이가 새 개념을 추가할 예정이에요!' : '';
+  }
+
   if (!items.length) { el.innerHTML = '<div class="empty" style="grid-column:1/-1;"><div class="icon">📚</div>아직 개념노트가 없어요.<br>+ 새 개념 버튼으로 추가해보세요!</div>'; return; }
   el.innerHTML = items.map(([id, c]) => `
-    <div class="concept-card" onclick="openConceptDetail('${id}')">
-      <div class="concept-name">${escHtml(c.name)}</div>
+    <div class="concept-card ${c.studied ? 'concept-studied' : ''}" onclick="openConceptDetail('${id}')">
+      <div class="concept-name" style="${c.studied ? 'color:var(--text3);' : ''}">${escHtml(c.name)}</div>
       <div class="concept-preview">${escHtml(c.body||'')}</div>
       <div class="concept-footer">
         <span class="badge badge-${(c.category||'기타').toLowerCase()}">${c.category||'기타'}</span>
-        <span style="font-size:11px;color:var(--text3);">${formatDate(tsToDate(c.updated||c.created))}</span>
+        <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+          <span style="font-size:11px;color:var(--text3);">${formatDate(tsToDate(c.updated||c.created))}</span>
+          <label style="display:flex;align-items:center;gap:3px;cursor:pointer;font-size:11px;color:${c.studied?'var(--green)':'var(--text3)'};" title="${c.studied?'이해 완료':'이해했으면 체크!'}">
+            <input type="checkbox" ${c.studied?'checked':''} onchange="toggleConceptStudied('${id}',${!!c.studied},event)" style="accent-color:var(--green);width:14px;height:14px;cursor:pointer;" />
+            ${c.studied ? '이해완료' : '미이해'}
+          </label>
+        </div>
       </div>
     </div>`).join('');
 }
