@@ -360,6 +360,28 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
   <div id="journalList"></div>
 </div>
 
+<!-- ===== 📝 메모장 ===== -->
+<div class="tab-panel" id="tab-memo">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">📝 메모장</div>
+      <div class="sec-sub">공부하다 궁금한 것, 나중에 찾아볼 것 — 빠르게 적어두세요</div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="filter-chip active" id="memoFilter-all" onclick="setMemoFilter('all',this)">전체</button>
+      <button class="filter-chip" id="memoFilter-todo" onclick="setMemoFilter('todo',this)">미완료</button>
+      <button class="filter-chip" id="memoFilter-done" onclick="setMemoFilter('done',this)">완료</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="memoInput" placeholder="예) async/await가 뭔지 찾아보기, Firebase Rules 테스트 방법, CORS 프록시 종류 비교..." style="flex:1;" onkeydown="if(event.key==='Enter')saveMemo()" />
+      <button class="btn btn-primary" onclick="saveMemo()">+ 추가</button>
+    </div>
+  </div>
+  <div id="memoList"></div>
+</div>
+
 <!-- ===== 📚 개념노트 ===== -->
 <div class="tab-panel" id="tab-concepts">
   <div class="sec-header">
@@ -627,7 +649,9 @@ const LOCAL_QUIZ_BANK = {
 let roadmapProgress = {}; // {topicId: {completed, completedAt}}
 let discoveries = {};     // Firebase snapshot
 let journals = {};
+let memos = {};
 let concepts = {};
+let memoFilterMode = 'all';
 let quizData = null;
 let currentQuizQ = 0;
 let quizScore = 0;
@@ -660,6 +684,10 @@ function initFirebase() {
     journals = snap.val() || {};
     renderJournals();
     renderStats();
+  });
+  _db.ref(FB.memos).on('value', snap => {
+    memos = snap.val() || {};
+    renderMemos();
   });
   _db.ref(FB.concepts).on('value', snap => {
     concepts = snap.val() || {};
