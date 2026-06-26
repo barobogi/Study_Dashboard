@@ -271,6 +271,8 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
     <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 퀴즈</button>
     <button class="tab-btn" onclick="switchTab('explain',this)">🤖 AI 설명</button>
     <button class="tab-btn" onclick="switchTab('stats',this)">📊 통계</button>
+    <button class="tab-btn" onclick="switchTab('studycard',this)">📖 학습카드</button>
+    <button class="tab-btn" onclick="switchTab('debuglog',this)">🐛 DEBUG</button>
   </div>
 </div>
 
@@ -496,6 +498,36 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
     <div class="chart-title">로드맵 단계별 달성률 (%)</div>
     <canvas id="chartRoadmap" height="80"></canvas>
   </div>
+</div>
+
+<!-- ===== 📖 학습카드 ===== -->
+<div class="tab-panel" id="tab-studycard">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">📖 학습카드</div>
+      <div class="sec-sub">Today for Barobogi — AI Study 게시판</div>
+    </div>
+    <a href="https://barobogi.github.io/Daily_for_Barobogi/ai-study.html" target="_blank"
+       style="font-size:12px; color:var(--accent); text-decoration:none;">↗ 새 탭으로 열기</a>
+  </div>
+  <iframe src="https://barobogi.github.io/Daily_for_Barobogi/ai-study.html"
+          style="width:100%; height:80vh; border:none; border-radius:8px; background:var(--bg2);"
+          loading="lazy"></iframe>
+</div>
+
+<!-- ===== 🐛 DEBUG ===== -->
+<div class="tab-panel" id="tab-debuglog">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">🐛 DEBUG 이력</div>
+      <div class="sec-sub">D:\REF_DEBUG — 전체 프로젝트 디버깅 로그 통합 관리</div>
+    </div>
+    <a href="https://barobogi.github.io/REF_DEBUG/" target="_blank"
+       style="font-size:12px; color:var(--accent); text-decoration:none;">↗ 새 탭으로 열기</a>
+  </div>
+  <iframe src="https://barobogi.github.io/REF_DEBUG/"
+          style="width:100%; height:80vh; border:none; border-radius:8px; background:var(--bg2);"
+          loading="lazy"></iframe>
 </div>
 
 </main>
