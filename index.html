@@ -597,28 +597,61 @@ const ROADMAP = [
 
 const PROJECTS = [
   {
-    name: '주식 포트폴리오 대시보드', version: 'v1.2', icon: '📈', color: '#dbeafe',
-    desc: '카카오톡 → 자동 파싱 → GitHub Pages 시각화. Firebase 동기화, Study 탭, 환율 폴백.',
-    skills: ['Python', 'Firebase', 'Web', 'API', 'Git'],
-    date: '2026-06-19', url: 'https://barobogi.github.io/stock_dashboard/stock-dashboard.html'
+    category: '📊 대시보드 & 분석',
+    icon: '📊',
+    color: '#dbeafe',
+    items: [
+      {
+        name: 'Stock Dashboard', version: 'v1.2',
+        desc: '주식 현재가 자동 갱신. 카카오톡 → 파싱 → GitHub Pages 시각화. Firebase 동기화.',
+        skills: ['Python', 'Firebase', 'Web', 'API', 'Git'],
+        url: 'https://barobogi.github.io/stock_dashboard/'
+      },
+      {
+        name: 'Improve Stock', version: 'v1.0',
+        desc: '종가베팅 시스템 + VCP 시뮬레이션. KIS API, 텔레그램 알림.',
+        skills: ['Python', 'API', 'Telegram'],
+        url: 'https://barobogi.github.io/Improve_stock/'
+      },
+    ]
   },
   {
-    name: '멀티미디어 요약 앱', version: 'v1.0', icon: '🎬', color: '#dcfce7',
-    desc: 'YouTube URL → Gemini 영상 이해 → Claude 구조화 요약 → Daum메일/GitHub 자동 배포.',
-    skills: ['Python', 'Flutter', 'AI', 'API', 'DevOps'],
-    date: '2026-06-20', url: 'https://barobogi.github.io/Daily_for_Barobogi/information.html'
+    category: '📚 학습 & 개발',
+    icon: '📚',
+    color: '#fef3c7',
+    items: [
+      {
+        name: 'Study Dashboard', version: 'v1.0',
+        desc: '학습 로드맵, 개념노트, AI 퀴즈, 통계. 완전한 학습 플랫폼.',
+        skills: ['Web', 'Firebase', 'AI', 'Git'],
+        url: 'https://barobogi.github.io/Study_Dashboard/'
+      },
+      {
+        name: 'Daily for Barobogi', version: 'v1.0',
+        desc: 'AI Study 게시판, 학습일지, 로그, 통계. 매일 학습 기록.',
+        skills: ['Web', 'Firebase', 'API'],
+        url: 'https://barobogi.github.io/Daily_for_Barobogi/'
+      },
+    ]
   },
   {
-    name: '모바일 만복이 채팅 앱', version: 'v1.4', icon: '📱', color: '#ede9fe',
-    desc: '폰 Flutter 앱 → Firebase relay → 데스크탑 데몬 → Claude API. Tool Use로 파일 실행.',
-    skills: ['Flutter', 'Firebase', 'Python', 'AI', 'API'],
-    date: '2026-06-22', url: ''
-  },
-  {
-    name: '바로보기의 공부방 (이 앱)', version: 'v1.0', icon: '📚', color: '#fef3c7',
-    desc: '로드맵, 즉흥 메모, 학습일지, 개념노트, AI 퀴즈, AI 설명, 통계를 한 곳에.',
-    skills: ['Web', 'Firebase', 'AI', 'Git'],
-    date: '2026-06-23', url: ''
+    category: '🔧 앱 & 시스템',
+    icon: '🔧',
+    color: '#ede9fe',
+    items: [
+      {
+        name: '모바일 만복이 채팅 앱', version: 'v1.4',
+        desc: '폰 Flutter 앱 → Firebase relay → 데스크탑 Claude. Tool Use로 파일 실행.',
+        skills: ['Flutter', 'Firebase', 'Python', 'AI', 'API'],
+        url: ''
+      },
+      {
+        name: '멀티미디어 요약 앱', version: 'v1.0',
+        desc: 'YouTube → Gemini 분석 → Claude 요약 → GitHub 배포.',
+        skills: ['Python', 'Flutter', 'AI', 'API', 'DevOps'],
+        url: 'https://barobogi.github.io/Multimedia_summary/'
+      },
+    ]
   },
 ];
 
@@ -1088,18 +1121,29 @@ function deleteConceptFromDetail() {
 
 // ─── PROJECTS ───────────────────────────────────────────────────────────────
 function renderProjects() {
-  document.getElementById('projectList').innerHTML = PROJECTS.map(p => `
-    <div class="proj-card">
-      <div class="proj-icon" style="background:${p.color}">${p.icon}</div>
-      <div class="proj-info">
-        <div class="proj-name">${p.name} <span class="proj-version">${p.version}</span></div>
-        <div class="proj-desc">${p.desc}</div>
-        <div class="proj-skills">
-          ${p.skills.map(s=>`<span class="badge badge-${s.toLowerCase()}">${s}</span>`).join('')}
-        </div>
+  let html = '';
+  PROJECTS.forEach(cat => {
+    html += `
+    <div style="margin-bottom:24px;">
+      <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+        <span style="font-size:18px;">${cat.icon}</span>${cat.category}
       </div>
-      ${p.url ? `<a href="${p.url}" target="_blank" class="btn btn-outline btn-sm" style="align-self:flex-start;flex-shrink:0;">🔗</a>` : ''}
-    </div>`).join('');
+      <div style="display:grid;gap:12px;">
+        ${cat.items.map(p => `
+        <div class="proj-card" style="border-left:3px solid ${cat.color};">
+          <div class="proj-info" style="flex:1;">
+            <div class="proj-name">${p.name} <span class="proj-version">${p.version}</span></div>
+            <div class="proj-desc">${p.desc}</div>
+            <div class="proj-skills">
+              ${p.skills.map(s=>`<span class="badge badge-${s.toLowerCase()}">${s}</span>`).join('')}
+            </div>
+          </div>
+          ${p.url ? `<a href="${p.url}" target="_blank" class="btn btn-outline btn-sm" style="align-self:flex-start;flex-shrink:0;">🔗 방문</a>` : '<span style="font-size:12px;color:var(--text3);">준비중</span>'}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('projectList').innerHTML = html;
 }
 
 // ─── QUIZ ────────────────────────────────────────────────────────────────────
