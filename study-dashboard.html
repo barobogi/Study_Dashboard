@@ -551,40 +551,50 @@ document.addEventListener('DOMContentLoaded',function(){
   var dt=document.getElementById('manboknews-date');
   if(dt) dt.textContent='GeekNews 2026-07-04 기술 트렌드 - 만복이가 분류';
   if(el) el.innerHTML=`
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="루프 엔지니어링의 미학" data-url="https://www.langchain.com/blog/the-art-of-loop-engineering" data-tag="트렌드" data-summary="LangChain이 AI 에이전트 루프 설계 원칙을 정리 — 언제 루프를 쓰고 언제 끊어야 하는지 실전 가이드"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
-        <a href="https://www.langchain.com/blog/the-art-of-loop-engineering" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">루프 엔지니어링의 미학 &#8599;</a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">루프 엔지니어링의 미학 <span style="font-size:11px;opacity:0.5;">↗</span></div>
         <div style="font-size:12px;color:var(--text2);margin-top:6px;">LangChain이 AI 에이전트 루프 설계 원칙을 정리 — 언제 루프를 쓰고 언제 끊어야 하는지 실전 가이드</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Show GN: Retry-now, 완전 자율 루프 에이전트" data-url="https://news.hada.io/topic?id=31111" data-tag="특허후보" data-summary="실패 시 자동 재시도·재계획하는 완전 자율 루프 에이전트 — AI 자동화 + 자기복구 조합이 새로운 패턴"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">💡 특허후보</span>
         </div>
-        <a href="https://news.hada.io/topic?id=31111" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">Show GN: Retry-now, 완전 자율 루프 에이전트 &#8599;</a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Show GN: Retry-now, 완전 자율 루프 에이전트 <span style="font-size:11px;opacity:0.5;">↗</span></div>
         <div style="font-size:12px;color:var(--text2);margin-top:6px;">실패 시 자동 재시도·재계획하는 완전 자율 루프 에이전트 — AI 자동화 + 자기복구 조합이 새로운 패턴</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="세션 기록을 기억하는건 에이전트에 유용하지 않음" data-url="https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts" data-tag="학습" data-summary="트랜스크립트 통째 기억 vs 구조화된 메모리 — 에이전트 메모리 설계의 핵심 함정 분석"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
         </div>
-        <a href="https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">세션 기록을 기억하는건 에이전트에 유용하지 않음 &#8599;</a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">세션 기록을 기억하는건 에이전트에 유용하지 않음 <span style="font-size:11px;opacity:0.5;">↗</span></div>
         <div style="font-size:12px;color:var(--text2);margin-top:6px;">트랜스크립트 통째 기억 vs 구조화된 메모리 — 에이전트 메모리 설계의 핵심 함정 분석</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Senior SWE-Bench: 시니어 엔지니어급 에이전트 평가 벤치마크" data-url="https://senior-swe-bench.snorkel.ai/" data-tag="트렌드" data-summary="기존 SWE-Bench보다 난이도 높인 오픈소스 벤치마크 — 코딩 에이전트 실력 측정 기준이 바뀐다"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
-        <a href="https://senior-swe-bench.snorkel.ai/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">Senior SWE-Bench: 시니어 엔지니어급 에이전트 평가 벤치마크 &#8599;</a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Senior SWE-Bench: 시니어 엔지니어급 에이전트 평가 벤치마크 <span style="font-size:11px;opacity:0.5;">↗</span></div>
         <div style="font-size:12px;color:var(--text2);margin-top:6px;">기존 SWE-Bench보다 난이도 높인 오픈소스 벤치마크 — 코딩 에이전트 실력 측정 기준이 바뀐다</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것" data-url="https://mathstodon.xyz/@mjd/115096720350507897" data-tag="학습" data-summary="버그 찾기보다 &quot;나중에 고치기 어려운 코드&quot; 발견이 리뷰의 진짜 가치라는 짧고 날카로운 인사이트"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
         </div>
-        <a href="https://mathstodon.xyz/@mjd/115096720350507897" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것 &#8599;</a>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">버그 찾기보다 "나중에 고치기 어려운 코드" 발견이 리뷰의 진짜 가치라는 짧고 날카로운 인사이트</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것 <span style="font-size:11px;opacity:0.5;">↗</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">버그 찾기보다 &quot;나중에 고치기 어려운 코드&quot; 발견이 리뷰의 진짜 가치라는 짧고 날카로운 인사이트</div>
       </div>
   `;
 });
