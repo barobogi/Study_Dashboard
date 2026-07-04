@@ -80,12 +80,18 @@ study_all/
 ---
 
 ## 다음 세션 작업 후보
-- [ ] **GitHub Pages 활성화**: Settings → Pages → Deploy from branch main / (root)
+- [ ] **만복이 News 파싱 수정**: n8n 기사 파싱 노드 regex 교체 (GeekNews HTML 구조 변경 대응)
+  - 새 패턴: `href='(https?://[^']+)' rel='nofollow'[^>]*><h2 class='topic-title-heading'>([^<]+)</h2>`
+- [ ] **만복이 News 상세 기능**: 클릭 시 원본링크/만복이 요약/선정이유/코멘트 기능
+  - 요구사항 전체: `D:\AI\260623_1_study_all\REF\manbok_news_requirements.md`
 - [ ] **퀴즈 데몬 테스트**: 데몬 켜고 퀴즈 탭 → "퀴즈 시작(Claude AI 생성)" 눌러보기
-- [ ] **AI 설명 테스트**: 데몬 켜고 "CORS가 뭐야?" 입력 후 응답 확인
-- [ ] **학습 루틴 시작**: 매일 공부방 앱 열고 발견 메모 + 일지 기록
-- [ ] **개념노트 추가**: 작업하다 새 개념 나오면 바로 추가 (현재 6개 시드)
 - [ ] master_watch.py 등록부에 Study_Dashboard 추가 (자동 push 연결)
+
+## 만복이 News 현재 상태 (2026-07-04)
+- n8n 워크플로우 Active (포트 5680)
+- 텔레그램 전송 ✅ / 게시판 등록 ⚠️ (파싱 수정 필요)
+- 핵심 철학: 만복이가 직접 읽고 기억에 반영하는 도구 (자동 선별만으로 끝내지 않을 것)
+- 관련 스크립트: `D:\Dev\n8n_scripts\update_geek_news.py`
 
 ---
 
