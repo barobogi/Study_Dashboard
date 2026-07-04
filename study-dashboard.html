@@ -552,49 +552,49 @@ document.addEventListener('DOMContentLoaded',function(){
   if(dt) dt.textContent='GeekNews 2026-07-04 기술 트렌드 - 만복이가 분류';
   if(el) el.innerHTML=`
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="루프 엔지니어링의 미학" data-url="https://www.langchain.com/blog/the-art-of-loop-engineering" data-gn-url="https://news.hada.io/topic?id=31106" data-tag="트렌드" data-summary="LangChain이 AI 에이전트 루프 설계 원칙을 정리 — 언제 루프를 쓰고 언제 끊어야 하는지 실전 가이드"
+           data-title="루프 엔지니어링의 미학" data-url="https://www.langchain.com/blog/the-art-of-loop-engineering" data-gn-url="https://news.hada.io/topic?id=31106" data-tag="트렌드" data-summary="LangChain이 정리한 AI 에이전트 루프 설계 패턴 — 언제 멈추고, 언제 재시도하고, 언제 사람을 개입시킬지에 대한 실전 가이드"
            onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
         <div style="font-size:14px;font-weight:600;color:var(--text);">루프 엔지니어링의 미학 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">LangChain이 AI 에이전트 루프 설계 원칙을 정리 — 언제 루프를 쓰고 언제 끊어야 하는지 실전 가이드</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">LangChain이 정리한 AI 에이전트 루프 설계 패턴 — 언제 멈추고, 언제 재시도하고, 언제 사람을 개입시킬지에 대한 실전 가이드</div>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="Show GN: Retry-now, 완전 자율 루프 에이전트" data-url="https://news.hada.io/topic?id=31111" data-gn-url="https://news.hada.io/topic?id=31111" data-tag="특허후보" data-summary="실패 시 자동 재시도·재계획하는 완전 자율 루프 에이전트 — AI 자동화 + 자기복구 조합이 새로운 패턴"
-           onclick="openNewsDetail(this)">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">💡 특허후보</span>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">Show GN: Retry-now, 완전 자율 루프 에이전트 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">실패 시 자동 재시도·재계획하는 완전 자율 루프 에이전트 — AI 자동화 + 자기복구 조합이 새로운 패턴</div>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="세션 기록을 기억하는건 에이전트에 유용하지 않음" data-url="https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts" data-gn-url="https://news.hada.io/topic?id=31112" data-tag="학습" data-summary="트랜스크립트 통째 기억 vs 구조화된 메모리 — 에이전트 메모리 설계의 핵심 함정 분석"
-           onclick="openNewsDetail(this)">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">세션 기록을 기억하는건 에이전트에 유용하지 않음 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">트랜스크립트 통째 기억 vs 구조화된 메모리 — 에이전트 메모리 설계의 핵심 함정 분석</div>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="Senior SWE-Bench: 시니어 엔지니어급 에이전트 평가 벤치마크" data-url="https://senior-swe-bench.snorkel.ai/" data-gn-url="https://news.hada.io/topic?id=31075" data-tag="트렌드" data-summary="기존 SWE-Bench보다 난이도 높인 오픈소스 벤치마크 — 코딩 에이전트 실력 측정 기준이 바뀐다"
+           data-title="세션 기록을 기억하는 건 에이전트에 유용하지 않음" data-url="https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts" data-gn-url="https://news.hada.io/topic?id=31112" data-tag="트렌드" data-summary="에이전트가 대화 로그 전체를 저장하는 방식은 비효율적이며, 구조화된 상태 추출이 훨씬 낫다는 주장"
            onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">Senior SWE-Bench: 시니어 엔지니어급 에이전트 평가 벤치마크 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">기존 SWE-Bench보다 난이도 높인 오픈소스 벤치마크 — 코딩 에이전트 실력 측정 기준이 바뀐다</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">세션 기록을 기억하는 건 에이전트에 유용하지 않음 <span style="font-size:11px;opacity:0.5;">↗</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">에이전트가 대화 로그 전체를 저장하는 방식은 비효율적이며, 구조화된 상태 추출이 훨씬 낫다는 주장</div>
       </div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것" data-url="https://mathstodon.xyz/@mjd/115096720350507897" data-gn-url="https://news.hada.io/topic?id=31067" data-tag="학습" data-summary="버그 찾기보다 &quot;나중에 고치기 어려운 코드&quot; 발견이 리뷰의 진짜 가치라는 짧고 날카로운 인사이트"
+           data-title="Alibaba, 사내에서 클로드 코드 사용 금지 예정" data-url="https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/" data-gn-url="https://news.hada.io/topic?id=31097" data-tag="트렌드" data-summary="백도어 위험을 이유로 Alibaba가 Claude Code 사용을 금지 — AI 코딩 도구의 기업 보안 리스크 이슈 수면 위로"
+           onclick="openNewsDetail(this)">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Alibaba, 사내에서 클로드 코드 사용 금지 예정 <span style="font-size:11px;opacity:0.5;">↗</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">백도어 위험을 이유로 Alibaba가 Claude Code 사용을 금지 — AI 코딩 도구의 기업 보안 리스크 이슈 수면 위로</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Senior SWE-Bench: 시니어 엔지니어급 AI 에이전트 평가 벤치마크" data-url="https://senior-swe-bench.snorkel.ai/" data-gn-url="https://news.hada.io/topic?id=31075" data-tag="트렌드" data-summary="기존 SWE-Bench보다 난이도 높은 실무 수준 태스크로 AI 코딩 에이전트 성능을 측정하는 오픈소스 벤치마크"
+           onclick="openNewsDetail(this)">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Senior SWE-Bench: 시니어 엔지니어급 AI 에이전트 평가 벤치마크 <span style="font-size:11px;opacity:0.5;">↗</span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">기존 SWE-Bench보다 난이도 높은 실무 수준 태스크로 AI 코딩 에이전트 성능을 측정하는 오픈소스 벤치마크</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것" data-url="https://mathstodon.xyz/@mjd/115096720350507897" data-gn-url="https://news.hada.io/topic?id=31067" data-tag="학습" data-summary="버그 발견보다 미래의 수정·확장을 어렵게 만드는 코드를 잡아내는 게 리뷰의 핵심이라는 실용적 관점 정리"
            onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
         </div>
         <div style="font-size:14px;font-weight:600;color:var(--text);">코드 리뷰의 주된 목적은 유지보수하기 어려운 코드를 찾는 것 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">버그 찾기보다 &quot;나중에 고치기 어려운 코드&quot; 발견이 리뷰의 진짜 가치라는 짧고 날카로운 인사이트</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">버그 발견보다 미래의 수정·확장을 어렵게 만드는 코드를 잡아내는 게 리뷰의 핵심이라는 실용적 관점 정리</div>
       </div>
   `;
 });
