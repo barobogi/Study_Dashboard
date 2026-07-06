@@ -1,5 +1,21 @@
 # CHANGELOG — 바로보기의 공부방
 
+## v1.2 — 2026-07-06
+
+### 추가
+- **만복이 News 탭**: GeekNews 매일 08:00 자동 선별 5개 + 태그 분류 ([트렌드]/[학습]/[특허후보])
+- **뉴스 상세 모달**: 카드 클릭 시 만복이 요약 + 원본 링크 + 긱뉴스 링크 + 바로보기 코멘트 기능
+- index.html에 newsDetailModal + openNewsDetail 함수 추가 (GitHub Pages 서빙 파일 정상화)
+
+### 수정
+- `update_geek_news.py` 위치: `D:\Dev\n8n_scripts\` (index.html 업데이트 대상 추가 예정)
+- n8n 워크플로우 경로 고정: `D:\Dev\n8n_data` (trailing space 이슈 해결)
+
+## v1.1 — 2026-06-25
+
+### 변경
+- 💬 만복이 채팅탭 추가 후 즉시 삭제 (daemon → Anthropic API 크레딧 필요, 목표와 상충)
+
 ## v1.0 — 2026-06-23
 
 ### 추가
