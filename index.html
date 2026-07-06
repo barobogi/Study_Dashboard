@@ -517,121 +517,52 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
 document.addEventListener('DOMContentLoaded',function(){
   var el=document.getElementById('manboknews-body');
   var dt=document.getElementById('manboknews-date');
-  if(dt) dt.textContent='GeekNews 2026-07-06 湲곗닠 ?몃젋????留뚮났?닿? 遺꾨쪟';
+  if(dt) dt.textContent='GeekNews 2026-07-06 湲곗닠 ?몃젋??- 留뚮났?닿? 遺꾨쪟';
   if(el) el.innerHTML=`
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">?뮕 ?뱁뿀?꾨낫</span>
-        </div>
-        <a href="https://github.com/MemNixFS/MemNixFS" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">MemNixFS - 由щ늼??硫붾え由??ㅽ봽瑜??뚯씪?쒖뒪?쒖쑝濡?蹂?섑빐 議곗궗?섎뒗 ?꾧뎄 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="猷⑦봽 ?붿??덉뼱留곸쓽 誘명븰" data-url="https://www.langchain.com/blog/the-art-of-loop-engineering" data-gn-url="https://news.hada.io/topic?id=31106" data-tag="?몃젋?? data-summary="LangChain???뺣━???먯씠?꾪듃 猷⑦봽 ?ㅺ퀎 ?먯튃 ???몄젣 猷⑦봽瑜??뚮━怨? ?몄젣 硫덉텧吏 ?먮떒 湲곗? ?쒖떆"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
         </div>
-        <a href="https://whale-tail.tistory.com/entry/DevOps-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%A7%81%EC%A0%91-%EB%A7%8C%EB%93%A4%EC%A7%80-%EB%A7%90%EA%B3%A0-%EB%AC%B4%EB%A3%8C-SaaS%EC%97%90-%EB%A7%A1%EA%B2%A8%EB%9D%BC-%E2%80%94-Sentry-PostHog%EB%A1%9C-0%EC%9B%90-%EA%B4%80%EC%B8%A1" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">紐⑤땲?곕쭅 吏곸젒 留뚮뱾吏 留먭퀬 臾대즺 SaaS??留↔꺼????Sentry + PostHog濡?0??愿痢???/a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">猷⑦봽 ?붿??덉뼱留곸쓽 誘명븰 <span style="font-size:11px;opacity:0.5;">??/span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">LangChain???뺣━???먯씠?꾪듃 猷⑦봽 ?ㅺ퀎 ?먯튃 ???몄젣 猷⑦봽瑜??뚮━怨? ?몄젣 硫덉텧吏 ?먮떒 湲곗? ?쒖떆</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://github.com/ljtn/epiq" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">epiq - Git 湲곕컲 遺꾩궛??濡쒖뺄 CLI ?ㅼ씠?곕툕 ?댁뒋 ?몃옒而???/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://github.com/microsoft/inshellisense" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">inshellisense - IDE ?ㅽ??쇱쓽 ??紐낅졊???먮룞?꾩꽦 ?꾧뎄 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://blog.atfedi.de/ko/leaving-fedify/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">????fedify ???좊굹蹂대땲 ?뚭쾶 ??fedify??醫뗭? ?먮뱾 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://ssowonny.medium.com/2026-%EC%83%81%EB%B0%98%EA%B8%B0-%EB%A7%90%EC%95%84%EB%A8%B9%EC%97%88%EC%9D%84-%EB%95%8C-%EC%93%B0%EB%8A%94-%EA%B8%80-3c7927171971" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">2026 ?곷컲湲?留먯븘癒뱀뿀?????곕뒗 湲 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://github.com/columnar-tech/databow" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">databow - ADBC濡??곗씠?곕쿋?댁뒪瑜?議고쉶?섎뒗 CLI ?꾧뎄 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="?몄뀡 湲곕줉??湲곗뼲?섎뒗嫄??먯씠?꾪듃???좎슜?섏? ?딆쓬" data-url="https://12gramsofcarbon.com/p/agentics-memorizing-session-transcripts" data-gn-url="https://news.hada.io/topic?id=31112" data-tag="?숈뒿" data-summary="?먯씠?꾪듃媛 ?꾩껜 ???湲곕줉???듭㎏濡?湲곗뼲?섎뒗 諛⑹떇? 鍮꾪슚?⑥쟻 ??援ъ“?붾맂 ?곹깭 愿由ш? ?듭떖?대씪???ㅼ슜 ?몄궗?댄듃"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
         </div>
-        <a href="https://flowkater.io/posts/2026-07-02-what-ai-takes-before-jobs" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">AI媛 ?쇱옄由щ낫??癒쇱? 媛?멸???寃???/a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">?몄뀡 湲곕줉??湲곗뼲?섎뒗嫄??먯씠?꾪듃???좎슜?섏? ?딆쓬 <span style="font-size:11px;opacity:0.5;">??/span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">?먯씠?꾪듃媛 ?꾩껜 ???湲곕줉???듭㎏濡?湲곗뼲?섎뒗 諛⑹떇? 鍮꾪슚?⑥쟻 ??援ъ“?붾맂 ?곹깭 愿由ш? ?듭떖?대씪???ㅼ슜 ?몄궗?댄듃</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
-        </div>
-        <a href="https://www.instagram.com/p/DaLWruxtU_r/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">OpenAI, Codex ?꾩슜 誘몃땲 ?ㅻ낫???쁂odex Micro???곗? 怨듦컻 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
-        </div>
-        <a href="https://flamehaven.space/writing/when-medical-ai-benchmarks-move-faster-than-validation/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">"?꾨줎?곗뼱 AI媛 ?섎즺 ?꾨Ц ???닿꼈?????쇰Ц ?ш?利앺빐蹂대땲 ??梨꾩젏?먭컙 ?쇱튂??0.10, 梨꾩젏?먭? 怨?李멸?????/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Senior SWE-Bench: ?쒕땲???붿??덉뼱湲??먯씠?꾪듃 ?됯????ㅽ뵂?뚯뒪 踰ㅼ튂留덊겕" data-url="https://senior-swe-bench.snorkel.ai/" data-gn-url="https://news.hada.io/topic?id=31075" data-tag="?몃젋?? data-summary="湲곗〈 SWE-Bench蹂대떎 ?쒖씠???믪? ?ㅼ쟾 肄붾뵫 ?쒖뒪?щ줈 AI ?먯씠?꾪듃 肄붾뵫 ?λ젰 痢≪젙"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
         </div>
-        <a href="https://whale-tail.tistory.com/entry/Backend-%EB%AC%B4%EB%A3%8C-%EC%84%9C%ED%95%91-%EC%98%88%EB%B3%B4-API-%EB%AD%98-%EC%93%B0%EA%B3%A0-%EB%AD%98-%EB%B2%84%EB%A0%B8%EB%82%98-%E2%80%94-%EC%B9%B4%EB%93%9C-%EC%97%86%EC%9D%B4-%ED%8C%8C%EB%8F%84-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%86%8C%EC%8B%B1%ED%95%98%EA%B8%B0" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">臾대즺 ?쒗븨 ?덈낫 API 鍮꾧탳 ??Windy 臾대즺 ?곗뼱???쇰???蹂?뺣맂 ?곗씠?곕? 以????/a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Senior SWE-Bench: ?쒕땲???붿??덉뼱湲??먯씠?꾪듃 ?됯????ㅽ뵂?뚯뒪 踰ㅼ튂留덊겕 <span style="font-size:11px;opacity:0.5;">??/span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">湲곗〈 SWE-Bench蹂대떎 ?쒖씠???믪? ?ㅼ쟾 肄붾뵫 ?쒖뒪?щ줈 AI ?먯씠?꾪듃 肄붾뵫 ?λ젰 痢≪젙</div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Alibaba, ?щ궡?먯꽌 Claude Code ?ъ슜 湲덉? 議곗튂 ?덉젙" data-url="https://www.reuters.com/world/china/alibaba-ban-claude-code-workplace-over-alleged-backdoor-risks-source-says-2026-07-03/" data-gn-url="https://news.hada.io/topic?id=31097" data-tag="?몃젋?? data-summary="諛깅룄???곕젮 ?댁쑀濡?Claude Code 李⑤떒 ??AI 肄붾뵫 ?꾧뎄??湲곗뾽 蹂댁븞 由ъ뒪???쇱쓽 蹂멸꺽??
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
         </div>
-        <a href="https://www.youtube.com/watch?v=9uRE4WxaEis" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">?곕━???꾨꼍???멸퀎瑜??ㅺ퀎?????덉쓣源? MIT?먯꽌 ?ㅽ떚釉??묒빱? ??쇰윭 諛대뜑?뚯씠 ?멸컙??踰덉쁺?????... ??/a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Alibaba, ?щ궡?먯꽌 Claude Code ?ъ슜 湲덉? 議곗튂 ?덉젙 <span style="font-size:11px;opacity:0.5;">??/span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">諛깅룄???곕젮 ?댁쑀濡?Claude Code 李⑤떒 ??AI 肄붾뵫 ?꾧뎄??湲곗뾽 蹂댁븞 由ъ뒪???쇱쓽 蹂멸꺽??/div>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://heybunny.io/newsroom/260630-260731" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">?ㅼ씠踰꾨땲 ?쒕퉬??7/31濡??쒕퉬??醫낅즺 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">?뱻 ?몃젋??/span>
-        </div>
-        <a href="https://github.com/mljar/supertree" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">supertree - ?붿떆???몃━ ?명꽣?숉떚釉??쒓컖???꾧뎄 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
-        </div>
-        <a href="https://dev.to/samchon/i-made-ts-compiler-graph-mcp-10x-fewer-tokens-in-claude-code-1aea" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">TS 而댄뙆?쇰윭濡?留뚮뱺 肄붾뱶 洹몃옒??MCP, Claude Code ?좏겙 10諛??덇컧 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
-        </div>
-        <a href="https://boily.co.kr/guide/geo-repair-case-2026-06" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">?앹꽦??AI 寃??理쒖쟻??GEO), ?議곌뎔 ?먭퀬 痢≪젙?대뇬?????뺣퉬??移섍낵留?2二쇱깉 11%??7% ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">?뱴 ?숈뒿</span>
-        </div>
-        <a href="https://github.com/nicobailon/pi-subagents" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">pi-subagents - Pi瑜??꾪븳 ?쒕툕?먯씠?꾪듃 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
+           data-title="Retry-now, ?꾩쟾 ?먯쑉 猷⑦봽 ?먯씠?꾪듃" data-url="https://news.hada.io/topic?id=31111" data-gn-url="https://news.hada.io/topic?id=31111" data-tag="?뱁뿀?꾨낫" data-summary="?ㅽ뙣 ???먮룞?쇰줈 ?ㅼ떆 ?쒕룄?섎뒗 ?꾩쟾 ?먯쑉 猷⑦봽 ?먯씠?꾪듃 援ы쁽泥???&quot;?먯쑉 ?ъ떆??+ 議곌굔遺 醫낅즺&quot; 議고빀???뱁뿀 愿?먯뿉??寃??媛移??덉쓬"
+           onclick="openNewsDetail(this)">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">?뮕 ?뱁뿀?꾨낫</span>
         </div>
-        <a href="https://engineering.ab180.co/stories/standardizing-alert-system-with-iac" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">Alert ?쒖뒪?쒖쓣 ?쒖??뷀븯怨?IaC濡??댁쁺?섍린 ??/a>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">?뮕 ?뱁뿀?꾨낫</span>
-        </div>
-        <a href="https://www.armsom.org/post/building-a-low-power-high-performance-frigate-nvr-system-with-armsom-sige7" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">ArmSoM Sige7濡?援ъ텞????꾨젰 怨좎꽦????NVR ?쒖뒪????/a>
+        <div style="font-size:14px;font-weight:600;color:var(--text);">Retry-now, ?꾩쟾 ?먯쑉 猷⑦봽 ?먯씠?꾪듃 <span style="font-size:11px;opacity:0.5;">??/span></div>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;">?ㅽ뙣 ???먮룞?쇰줈 ?ㅼ떆 ?쒕룄?섎뒗 ?꾩쟾 ?먯쑉 猷⑦봽 ?먯씠?꾪듃 援ы쁽泥???&quot;?먯쑉 ?ъ떆??+ 議곌굔遺 醫낅즺&quot; 議고빀???뱁뿀 愿?먯뿉??寃??媛移??덉쓬</div>
       </div>
   `;
 });
