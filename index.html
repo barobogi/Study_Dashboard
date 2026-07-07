@@ -517,52 +517,115 @@ label { font-size:12px; color:var(--text2); margin-bottom:4px; display:block; }
 document.addEventListener('DOMContentLoaded',function(){
   var el=document.getElementById('manboknews-body');
   var dt=document.getElementById('manboknews-date');
-  if(dt) dt.textContent='GeekNews 2026-07-08 기술 트렌드 - 만복이가 분류';
+  if(dt) dt.textContent='GeekNews 2026-07-08 기술 트렌드 — 만복이가 분류';
   if(el) el.innerHTML=`
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="저커버그, &quot;AI 에이전트 기술이 기대보다 느리게 발전하고 있다&quot;" data-url="https://www.reuters.com/business/zuckerberg-says-ai-agent-development-going-slower-than-expected-2026-07-02/" data-gn-url="https://news.hada.io/topic?id=31203" data-tag="트렌드" data-summary="Meta CEO가 AI 에이전트 개발 속도가 예상보다 더디다고 인정 — 업계 전반의 기대치 조정 신호"
-           onclick="openNewsDetail(this)">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">저커버그, &quot;AI 에이전트 기술이 기대보다 느리게 발전하고 있다&quot; <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">Meta CEO가 AI 에이전트 개발 속도가 예상보다 더디다고 인정 — 업계 전반의 기대치 조정 신호</div>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="AI 코딩 시대의 개발자 역할 변화: 코딩 실행자에서 맥락·검증·제품화 설계자로" data-url="https://velog.io/@teo/ai-era-developer-role" data-gn-url="https://news.hada.io/topic?id=31165" data-tag="학습" data-summary="AI 도구가 코딩을 대체하는 시대, 개발자가 살아남을 방향을 구체적으로 제시"
-           onclick="openNewsDetail(this)">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
         </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">AI 코딩 시대의 개발자 역할 변화: 코딩 실행자에서 맥락·검증·제품화 설계자로 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">AI 도구가 코딩을 대체하는 시대, 개발자가 살아남을 방향을 구체적으로 제시</div>
+        <a href="https://cse.ac/jun/hobby-capital/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">AI 시대에 취미가 곧 비즈니스 기회가 되는 이유 ↗</a>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="루프 엔지니어링의 미학" data-url="https://www.langchain.com/blog/the-art-of-loop-engineering" data-gn-url="https://news.hada.io/topic?id=31106" data-tag="트렌드" data-summary="LangChain이 정리한 AI 에이전트 루프 설계 원칙 — n8n 워크플로 설계에 직접 적용 가능"
-           onclick="openNewsDetail(this)">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">루프 엔지니어링의 미학 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">LangChain이 정리한 AI 에이전트 루프 설계 원칙 — n8n 워크플로 설계에 직접 적용 가능</div>
+        <a href="https://aosabook.org/en/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">오픈소스 애플리케이션의 구조와 설계 지식 공유 ↗</a>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="Show GN: 대본(YAML) 한 장이면 나레이션·자막·BGM 입힌 영상이 나오는 도구" data-url="https://news.hada.io/topic?id=31215" data-gn-url="https://news.hada.io/topic?id=31215" data-tag="특허후보" data-summary="💡 YAML 스크립트 → 완성 영상 자동 생성 파이프라인 — AI 자동화 + 콘텐츠 생성 결합으로 특허 후보 검토 가치 있음"
-           onclick="openNewsDetail(this)">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://github.com/rocky-data/rocky" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">Rocky - 파이프라인 전체를 타입 검사해 실행 전에 깨지는 변경을 잡아내는 SQL 변환 엔진 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">💡 특허후보</span>
         </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">Show GN: 대본(YAML) 한 장이면 나레이션·자막·BGM 입힌 영상이 나오는 도구 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">💡 YAML 스크립트 → 완성 영상 자동 생성 파이프라인 — AI 자동화 + 콘텐츠 생성 결합으로 특허 후보 검토 가치 있음</div>
+        <a href="https://astryx.atmeta.com/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">Astryx - Meta가 공개한 오픈소스 디자인 시스템 ↗</a>
       </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;"
-           data-title="Rocky - 파이프라인 전체를 타입 검사해 실행 전에 깨지는 변경을 잡아내는 SQL 변환 엔진" data-url="https://github.com/rocky-data/rocky" data-gn-url="https://news.hada.io/topic?id=31191" data-tag="트렌드" data-summary="SQL 파이프라인에 컴파일 타임 타입 안전성 도입 — 데이터 엔지니어링 툴체인의 새 방향"
-           onclick="openNewsDetail(this)">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
           <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
         </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);">Rocky - 파이프라인 전체를 타입 검사해 실행 전에 깨지는 변경을 잡아내는 SQL 변환 엔진 <span style="font-size:11px;opacity:0.5;">↗</span></div>
-        <div style="font-size:12px;color:var(--text2);margin-top:6px;">SQL 파이프라인에 컴파일 타임 타입 안전성 도입 — 데이터 엔지니어링 툴체인의 새 방향</div>
+        <a href="https://oborona.zip/post/-c" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">의미가 보이는 프로젝트를 작성하기 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://trillion-labs.github.io/blog/posts/fused-linear-cross-entropy/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">메모리 아끼면서 Cross Entropy Loss 계산하기 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://velog.io/@teo/ai-era-developer-role" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">AI 코딩 시대의 개발자 역할 변화: 코딩 실행자에서 맥락·검증·제품화 설계자로 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://github.com/dbtrail/dbtrail" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">dbtrail - 모든 행 변경을 기억하고 되돌리기 가능한 MySQL용 타임머신 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://github.com/CopilotKit/OpenTag" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">OpenTag - Slack용 Claude Tag의 오픈소스 대안 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#D97706;">💡 특허후보</span>
+        </div>
+        <a href="https://github.com/MemNixFS/MemNixFS" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">MemNixFS - 리눅스 메모리 덤프를 파일시스템으로 변환해 조사하는 도구 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://whale-tail.tistory.com/entry/DevOps-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%A7%81%EC%A0%91-%EB%A7%8C%EB%93%A4%EC%A7%80-%EB%A7%90%EA%B3%A0-%EB%AC%B4%EB%A3%8C-SaaS%EC%97%90-%EB%A7%A1%EA%B2%A8%EB%9D%BC-%E2%80%94-Sentry-PostHog%EB%A1%9C-0%EC%9B%90-%EA%B4%80%EC%B8%A1" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">모니터링 직접 만들지 말고 무료 SaaS에 맡겨라 — Sentry + PostHog로 0원 관측 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://github.com/ljtn/epiq" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">epiq - Git 기반 분산형 로컬 CLI 네이티브 이슈 트래커 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://github.com/microsoft/inshellisense" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">inshellisense - IDE 스타일의 셸 명령어 자동완성 도구 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://blog.atfedi.de/ko/leaving-fedify/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">탈(脫)fedify – 떠나보니 알게 된 fedify의 좋은 점들 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://ssowonny.medium.com/2026-%EC%83%81%EB%B0%98%EA%B8%B0-%EB%A7%90%EC%95%84%EB%A8%B9%EC%97%88%EC%9D%84-%EB%95%8C-%EC%93%B0%EB%8A%94-%EA%B8%80-3c7927171971" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">2026 상반기 말아먹었을 때 쓰는 글 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">📡 트렌드</span>
+        </div>
+        <a href="https://github.com/columnar-tech/databow" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">databow - ADBC로 데이터베이스를 조회하는 CLI 도구 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://flowkater.io/posts/2026-07-02-what-ai-takes-before-jobs" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">AI가 일자리보다 먼저 가져가는 것 ↗</a>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#EEF2FF;color:#4F46E5;">📚 학습</span>
+        </div>
+        <a href="https://www.instagram.com/p/DaLWruxtU_r/" target="_blank" rel="nofollow" style="font-size:14px;font-weight:600;color:var(--text);text-decoration:none;">OpenAI, Codex 전용 미니 키보드 ‘Codex Micro’ 티저 공개 ↗</a>
       </div>
   `;
 });
