@@ -35,14 +35,15 @@ def load_candidates():
 
 def main():
     concepts = get_concepts()
-    count = len(concepts) if concepts else 0
-    print(f"현재 개념노트: {count}개")
+    total = len(concepts) if concepts else 0
+    unstudied = sum(1 for c in concepts.values() if not c.get("studied")) if concepts else 0
+    print(f"전체 개념노트: {total}개 / 미이해: {unstudied}개")
 
-    if count >= MIN_COUNT:
-        print("✅ 이미 6개 이상 — 보충 불필요")
+    if unstudied >= MIN_COUNT:
+        print("✅ 미이해 6개 이상 — 보충 불필요")
         return
 
-    needed = MIN_COUNT - count
+    needed = MIN_COUNT - unstudied
     existing_names = {v["name"] for v in concepts.values()} if concepts else set()
     candidates = [c for c in load_candidates() if c["name"] not in existing_names]
 
