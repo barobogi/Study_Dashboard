@@ -1,7 +1,10 @@
 # concept_booster.py — 개념노트 자동 보충 (최소 6개 유지)
-import json, requests, datetime
+import json, datetime, sys
+from pathlib import Path
 
-FIREBASE_URL = "https://remote-claude-358d6-default-rtdb.asia-southeast1.firebasedatabase.app"
+sys.path.append(r"D:\AI\Global_Define")
+import local_db
+
 TASKS_PATH   = r"D:\AI\AI_hub\shared\tasks.json"
 MIN_COUNT    = 6
 
@@ -13,15 +16,10 @@ CATEGORY_MAP = {
 }
 
 def get_concepts():
-    r = requests.get(f"{FIREBASE_URL}/study_all/concepts.json")
-    return r.json() or {}
+    return local_db.get_concepts()
 
 def add_concept(name, body, category):
-    now = datetime.datetime.now().isoformat()
-    payload = {"name": name, "body": body, "category": category,
-               "projects": [], "created": now, "updated": now}
-    r = requests.post(f"{FIREBASE_URL}/study_all/concepts.json", json=payload)
-    return r.status_code == 200
+    return local_db.add_concept(name, body, category)
 
 def load_candidates():
     with open(TASKS_PATH, encoding="utf-8") as f:
