@@ -55,7 +55,7 @@ def main():
         if ok:
             added += 1
 
-    print(f"\n{added}개 추가 → 현재 {count + added}개")
+    print(f"\n{added}개 추가 → 현재 {total + added}개")
 
 if __name__ == "__main__":
     main()
