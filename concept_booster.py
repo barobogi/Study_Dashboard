@@ -5,6 +5,9 @@ from pathlib import Path
 sys.path.append(r"D:\AI\Global_Define")
 import local_db
 
+if sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
+
 TASKS_PATH   = r"D:\AI\AI_hub\shared\tasks.json"
 MIN_COUNT    = 6
 
